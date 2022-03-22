@@ -121,17 +121,26 @@ authorized to in the labs account. These tokens will last approximately
 
 1. Create a script to automate the gathering and assigning of the temporary
   AWS MFA credentials from Option 1.
-1. Try to reduce the amount of manual input as much as possible.
+   - Refer to script set_sts_token.py
+   - How to execute? 
+     - `python3 set_sts_token.py SixDigitMFACode`
+2. Try to reduce the amount of manual input as much as possible.
+   1. One click action. 
+   2. Process will get the session token and update the credentials file
+   3. User need to provide appropriate MFA code while executing the script
 
 ##### Question 0.1.1: 1
 
 What method did you use to store the aws credentials?  What are some other
 options?
+  - Option 01 I used
+  - Using AWS Vault
 
 ###### Question 0.1.1: 2
 
 Which AWS environment variable cannot be set in order to run the
 `aws sts get-session-token` command?
+ - Any lead will help. Cant find the answer.
 
 ##### Option 2: Using AWS Vault to automatically handle your temporary tokens
 
@@ -164,11 +173,15 @@ You want to set an alias in your .bashrc or .zshrc to something like this:
 #### Lab 0.1.2: GitHub
 
 1. Create a new repository from the [Stelligent-U repository template](https://github.com/stelligent/stelligent-u/generate)
-1. Select the owner of the repository
-1. Name the new private repository
-1. Generate ssh keys and
+2. Select the owner of the repository
+3. Name the new private repository
+4. Generate ssh keys and
   test access. Use [this GitHub guide](https://help.github.com/articles/connecting-to-github-with-ssh/)
   to get access and clone the private repo to your laptop.
+
+#### Status: Done   
+
+![img.png](img.png)
 
 #### Lab 0.1.3: Cloud9 Environment (Optional)
 
@@ -186,6 +199,8 @@ CLI commands as you did in [lab 0.1.1](#lab-011-aws-access-keys):
 - `list-buckets`
 - `describe-instances`
 
+####Status: Done
+
 #### Lab 0.1.4: Clone Repository
 
 Work with your GitHub repo in your development environment. Start
@@ -198,7 +213,7 @@ to configure the Cloud9 instance to work with GitHub.
    access to the repository try using either
    [token authentication](https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/)
    or an [SSH key](https://help.github.com/articles/connecting-to-github-with-ssh/).
-
+#### Status Done
 ### Retrospective 0.1
 
 #### Question: Environments

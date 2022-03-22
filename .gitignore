@@ -11,3 +11,7 @@ __pycache__
 
 .ruby-version
 *.pem
+mynote.txt
+junk
+.idea/
+.iml
