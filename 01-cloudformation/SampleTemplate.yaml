@@ -1,0 +1,15 @@
+---
+AWSTemplateFormatVersion: "2010-09-09"
+Description:
+  Sample Template for 01-cloudformation Lab
+Resources:
+  S3Bucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketName: jahidul-01-cloudformation
+
+# aws cloudformation create-stack --stack-name jahidul-01-cloudformation-lab --template-body file://SampleTemplate.yaml --parameters ParameterKey=KeyPairName,ParameterValue=TestKey ParameterKey=SubnetIDs,ParameterValue=SubnetID1\\,SubnetID2 --profile temp
+# aws cloudformation create-stack --stack-name jahidul-01-cloudformation-lab --template-body file://SampleTemplate.yaml --profile temp
+# aws cloudformation create-change-set --stack-name jahidul-010-cloudformation-lab --change-set-name first-change-set --template-body file://SampleTemplate.yaml --capabilities CAPABILITY_IAM --change-set-type CREATE --profile temp
+# aws cloudformation execute-change-set --change-set-name first-change-set --stack-name jahidul-010-cloudformation-lab --profile temp
+# aws cloudformation update-stack --stack-name jahidul-01-cloudformation-lab --template-body file://SampleTemplate.yaml --profile temp

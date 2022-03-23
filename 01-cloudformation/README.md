@@ -84,6 +84,16 @@ create an AWS Simple Storage Service (S3) Bucket.
   to run the template. Use your preferred region.
 
 - Note the output provided by creating the Stack.
+  - Change Set
+  `aws cloudformation create-change-set --stack-name jahidul-010-cloudformation-lab --change-set-name first-change-set --template-body file://SampleTemplate.yaml --capabilities CAPABILITY_IAM --change-set-type CREATE --profile temp`
+  ```json
+   {
+    "Id": "arn:aws:cloudformation:us-east-1:324320755747:changeSet/first-change-set/dd8ec3ca-994a-41ef-aec4-a02b2fd59356",
+    "StackId": "arn:aws:cloudformation:us-east-1:324320755747:stack/jahidul-010-cloudformation-lab/85be4670-aaa8-11ec-97d7-128ba5a37e89"
+   }
+  ```
+  - Execute Change Set
+  `aws cloudformation execute-change-set --change-set-name first-change-set --stack-name jahidul-010-cloudformation-lab --profile temp`
 
 - Though *functionally* unnecessary, the Description (i.e. its *purpose*)
   element documents your code's *intent*, so provide one. The Description
