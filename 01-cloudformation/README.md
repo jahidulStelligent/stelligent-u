@@ -116,6 +116,7 @@ to the stack and use the parameter's value as the name of the S3 bucket.
 - Put your parameter into a separate JSON file and pass that file to the CLI.
 
 - Update your stack.
+  - `aws cloudformation update-stack --stack-name jahidul-010-cloudformation-lab --template-body file://SampleTemplate.yaml --parameters file://parameters.json --profile temp`
 
 - Add the template changes and new parameter file to your Github repo.
 

@@ -1,0 +1,7 @@
+[
+  {
+    "ParameterKey": "BucketName",
+    "ParameterValue": "jahidul-01-cloudformation",
+    "UsePreviousValue": false
+  }
+]
