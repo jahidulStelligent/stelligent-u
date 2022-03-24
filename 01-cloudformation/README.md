@@ -153,6 +153,7 @@ name.
   deploying to some region other than your preferred region.
 
 - Commit the changes to your Github repo.
+####Status Done
 
 #### Lab 1.1.5: Termination Protection; Clean up
 
