@@ -7,7 +7,8 @@ Parameters:
     Default: jahidul-01-cloudformation
     Description: S3 Bucket Name
     Type: String
-
+Conditions:
+  IsReagionDefault: !Equals [!Ref AWS::Region, us-east-1]
 Resources:
   S3Bucket:
     Type: 'AWS::S3::Bucket'
@@ -16,5 +17,5 @@ Resources:
       BucketName:
         !Join
         - '-'
-        - - !Ref AWS::AccountId
+        - - !If [IsReagionDefault,!Ref AWS::AccountId,!Ref AWS::Region  ]
           - !Ref BucketName

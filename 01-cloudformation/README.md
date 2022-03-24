@@ -132,7 +132,9 @@ running the template from (i.e., using
 - Do not hard code the Account ID. Do not use an additional parameter to
   provide the Account ID value.
 
-- Update the stack.
+- Update the stack. 
+  - Due to the restrictions of one bucket/user I was getting `You have attempted to create more buckets than allowed (Service: Amazon S3; Status Code: 400; Error Code: TooManyBuckets;`
+  - I have deleted old stack and created new stack with template
 
 - Commit the changes to your Github repo.
 
@@ -164,6 +166,7 @@ name.
 
 - List the S3 buckets in both regions once this lesson's Stacks have been
   deleted to ensure their removal.
+##### Status Done
 
 ### Retrospective 1.1
 
