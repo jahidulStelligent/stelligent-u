@@ -1,0 +1,12 @@
+[
+  {
+    "ParameterKey": "IAMUserNmae",
+    "ParameterValue": "jj-test-user",
+    "UsePreviousValue": false
+  },
+  {
+    "ParameterKey": "StackName",
+    "ParameterValue": "jahidul-010-cloudformation-lab",
+    "UsePreviousValue": false
+  }
+]

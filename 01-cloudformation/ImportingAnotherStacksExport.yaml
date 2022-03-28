@@ -1,0 +1,25 @@
+---
+AWSTemplateFormatVersion: "2010-09-09"
+Description:
+  Sample Template for 01-cloudformation Lab
+Parameters:
+  StackName:
+    Default: jahidul-010-cloudformation-lab
+    Description: Stack Name
+    Type: String
+  IAMUserNmae:
+    Default: jahidul-01-cfn-lab-user
+    Description: IAM User Name
+    Type: String
+
+Resources:
+  IAMUser:
+    Type: AWS::IAM::User
+    Properties:
+      UserName: !Ref IAMUserNmae
+      ManagedPolicyArns:
+        - !ImportValue 'jahidul-010-cloudformation-lab:S3ReadPolicy'
+  #      - arn:aws:iam::324320755747:policy/s3-read-policy-jj-test
+ #       -!ImportValue 'Fn::Sub':'${StackName}:S3ReadPolicy'
+# aws cloudformation create-stack --stack-name jahidul-010-ImportingAnotherStacksExport --template-body file://ImportingAnotherStacksExport.yaml --parameters file://parameters2.json --region us-east-1 --profile temp --capabilities CAPABILITY_NAMED_IAM
+# aws cloudformation list-imports --export-name jahidul-010-cloudformation-lab:S3ReadPolicy

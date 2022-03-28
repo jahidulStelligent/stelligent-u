@@ -254,15 +254,23 @@ Create a *new* CFN template that describes an IAM User and applies to it
 the Managed Policy ARN created by and exported from the previous Stack.
 
 - Create this new Stack.
+  - Solution: ImportingAnotherStacksExport.yaml
+  - Note: * I did not find any CFN optiont to describe IAM user and attache IAM Managed policy in that IAM user
+          * Either I am missing something nor instead of decribe it shall be create new IAM user and attache the Managed poicy in that.
+          * I have solved it creating new I am user. 
 
 - [List all the Stack Imports](https://docs.aws.amazon.com/cli/latest/reference/cloudformation/list-imports.html)
   in that stack's region.
+  - Solution: `aws cloudformation list-imports --export-name jahidul-010-cloudformation-lab:S3ReadPolicy`
 
 #### Lab 1.2.4: Import/Export Dependencies
 
 Delete your CFN stacks in the same order you created them in. Did you
 succeed? If not, describe how you would _identify_ the problem, and
 resolve it yourself.
+Findings:
+- When tried to delete first template which has export in outputs, instead to delete stack went to update complete state with this message: `Export jahidul-010-cloudformation-lab:S3ReadPolicy cannot be deleted as it is in use by jahidul-010-ImportingAnotherStacksExport`
+- Delete the one which has imported the exported resource.
 
 ### Retrospective 1.2
 
@@ -271,6 +279,9 @@ resolve it yourself.
 Show how to use the IAM policy tester to demonstrate that the user
 cannot perform 'Put' actions on any S3 buckets.
 
+Solution: Used Policy Simulator to test the user permission.
+![img.png](img.png)
+
 #### Task: SSM Parameter Store
 
 Using the AWS Console, create a Systems Manager Parameter Store
@@ -278,6 +289,8 @@ parameter in the same region as the first Stack, and provide a value for
 that parameter. Modify the first Stack's template so that it utilizes
 this Parameter Store parameter value as the IAM User's name. Update the
 first stack. Finally, tear it down.
+
+Solution: Updated stack with ssm Template - CrossReferencingResources.yaml
 
 ## Lesson 1.3: Portability & Staying DRY
 
@@ -299,6 +312,11 @@ for a more thorough list of recommendations for improving your use of
 CloudFormation). Some lab exercises have already demonstrated
 portability (_can you point out where?_) and this lesson will focus
 on it specifically.
+
+Answer: 
+- Using Parameters
+- Using System Manager Parameter Store
+- Importing Resources from another template
 
 #### Lab 1.3.1: Scripts and Configuration
 

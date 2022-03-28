@@ -4,11 +4,11 @@ Description:
   Sample Template for 01-cloudformation Lab
 Parameters:
   IAMUserNmae:
-    Default: jahidul-01-cfn-lab-user
+    Default: '{{resolve:ssm:/stelligent-u/jahiudl/iam-user-name:1}}'
     Description: IAM User Name
     Type: String
-Conditions:
-  IsReagionDefault: !Equals [!Ref AWS::Region, us-east-1]
+#Conditions:
+#  IsReagionDefault: !Equals [!Ref AWS::Region, us-east-1]
 Resources:
   IAMUser:
     Type: AWS::IAM::User
@@ -29,11 +29,13 @@ Resources:
               - 's3:ListAllMyBuckets'
             Resource: '*'
       Users:
-        - !Ref IAMUserNmae
-
+        - !Ref IAMUser
 Outputs:
   ManagedPolicyResourceARN:
     Description: ManagedPolicyResourceARN
     Value: !Ref S3ReadPolicy
     Export:
       Name: !Join [ ":", [ !Ref "AWS::StackName", S3ReadPolicy ] ]
+
+  # aws cloudformation update-stack --stack-name jahidul-010-cloudformation-lab --template-body file://CrossReferencingResources.yaml --region us-east-1 --profile temp --capabilities CAPABILITY_NAMED_IAM
+  # aws cloudformation create-stack --stack-name jahidul-010-cloudformation-lab --template-body file://CrossReferencingResources.yaml --region us-east-1 --profile temp --capabilities CAPABILITY_NAMED_IAM
