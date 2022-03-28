@@ -1,0 +1,39 @@
+---
+AWSTemplateFormatVersion: "2010-09-09"
+Description:
+  Sample Template for 01-cloudformation Lab
+Parameters:
+  IAMUserNmae:
+    Default: jahidul-01-cfn-lab-user
+    Description: IAM User Name
+    Type: String
+Conditions:
+  IsReagionDefault: !Equals [!Ref AWS::Region, us-east-1]
+Resources:
+  IAMUser:
+    Type: AWS::IAM::User
+    Properties:
+      UserName: !Ref IAMUserNmae
+
+  S3ReadPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    DependsOn: IAMUser
+    Properties:
+      ManagedPolicyName: s3-read-policy-jj-test
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action:
+              - 's3:GetObject'
+              - 's3:ListAllMyBuckets'
+            Resource: '*'
+      Users:
+        - !Ref IAMUserNmae
+
+Outputs:
+  ManagedPolicyResourceARN:
+    Description: ManagedPolicyResourceARN
+    Value: !Ref S3ReadPolicy
+    Export:
+      Name: !Join [ ":", [ !Ref "AWS::StackName", S3ReadPolicy ] ]

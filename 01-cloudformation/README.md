@@ -173,15 +173,30 @@ name.
 
 #### Question: Why YAML
 
-_Why do we prefer the YAML format for CFN templates?_
+_Why do we prefer the YAML format for CFN templates?
+
+* YAML has a couple of big advantages over JSON, including the ability to self reference, support for complex datatypes, embedded block literals, comments, and more.
+
+* A big win for YAML is that it supports comments. This is very useful especially when you use it for configuration.
+
+* YAML-based templates use less punctuation and should be substantially easier to write and to read. They also allow the use of comments. CloudFormation supports essentially all of YAML, with the exception of hash merges, aliases, and some tags (binary, imap, pairs, TIMESTAMP, and set).
+
+* In addition to being more readable, YAML takes fewer characters to express the same information as JSON, and there is a character limit on the size of the template you can upload to CloudFormation.
+
 
 #### Question: Protecting Resources
 
 _What else can you do to prevent resources in a stack from being deleted?_
 
 See [DeletionPolicy](https://aws.amazon.com/premiumsupport/knowledge-center/cloudformation-accidental-updates/).
+* Set the DeletionPolicy attribute to prevent the deletion of an individual resource at the stack level.
+* Use AWS Identity and Access Management (IAM) policies to restrict the ability of users to delete or update a stack and its resources. 
+* Assign a stack policy to prevent updates to stack resources.
 
 _How is that different from applying Termination Protection?_
+
+* Use a stack policy only as a fail-safe mechanism to prevent accidental updates to specific stack resources. 
+* To control access to AWS resources or actions, use IAM.
 
 #### Task: String Substitution
 
@@ -216,6 +231,10 @@ IAM Managed Policy that controls that user.
 
 - Create the Stack.
 
+Solution: 
+- Template: SampleTemplate
+- CLI: ` aws cloudformation create-stack --stack-name jahidul-010-cloudformation-lab --template-body file://CrossReferencingResources.yaml --parameters file://parameters1.json --region us-east-1 --profile temp --capabilities CAPABILITY_NAMED_IAM`
+
 #### Lab 1.2.2: Exposing Resource Details via Exports
 
 Update the template by adding a CFN Output that exports the Managed
@@ -225,6 +244,9 @@ Policy's Amazon Resource Name ([ARN](https://docs.aws.amazon.com/general/latest/
 
 - [List all the Stack Exports](https://docs.aws.amazon.com/cli/latest/reference/cloudformation/list-exports.html)
   in that Stack's region.
+Solution: 
+- Template: CrossReferenceingResource.yaml
+- CLI: `aws cloudformation update-stack --stack-name jahidul-010-cloudformation-lab --template-body file://CrossReferencingResources.yaml --parameters file://parameters1.json --region us-east-1 --profile temp --capabilities CAPABILITY_NAMED_IAM`
 
 #### Lab 1.2.3: Importing another Stack's Exports
 
