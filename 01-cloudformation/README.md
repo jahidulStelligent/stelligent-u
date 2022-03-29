@@ -335,6 +335,8 @@ deploy _a single S3 bucket_.
   where the "_friendly-name_" value is parameterized in the CFN template
   but has a default value.
 
+Solution: 
+- Created script.sh to take input from env.yaml to create 4 stacks at same time in different region.
 #### Lab 1.3.2: Coding with AWS SDKs
 
 Repeat the exercise in the previous lab, with two modifications:
