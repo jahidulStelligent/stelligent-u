@@ -9,7 +9,12 @@ import os, sys, yaml, json
 #region='us-east-1'
 stack_name = 'jahidul-010-cloudformation-lab'
 bucket_name = 'jahidul-01-cloudformation'
+action = sys.argv[1]
 
+def set_profile(region):
+    session = boto3.Session(profile_name='temp')
+    cf_client = session.client('cloudformation', region_name=region)
+    return cf_client
 
 def read_env():
     regions_list = []
@@ -62,9 +67,8 @@ def get_sts_token(region):
 
 
 def create_stack(region):
-    session = boto3.Session(profile_name='temp')
-    temp_cf_client = session.client('cloudformation', region_name=region)
-    response = temp_cf_client.create_stack(
+    cf_client = set_profile(region=region)
+    response = cf_client.create_stack(
         StackName=stack_name,
         TemplateBody=read_cf_template(),
         Parameters=[
@@ -86,14 +90,46 @@ def create_stack(region):
     )
     return response
 
+
+def delete_stack(region):
+    cf_client = set_profile(region=region)
+    response = cf_client.delete_stack(
+        StackName=stack_name
+    )
+    print("Stack {} at {} Deleted".format(stack_name, region))
+    return response
+
+
+def get_stack_status(region):
+    cf_client = set_profile(region=region)
+    response = cf_client.describe_stacks(
+        StackName=stack_name
+    )
+    status = response['Stacks'][0].get('StackStatus')
+    print("Stack {} status {}".format(stack_name,status))
+    return status
+
 #create_stack()
 #read_cf_template()
 #read_env()
 
 
 if __name__ == '__main__':
+    cf_action = action
+    print(cf_action)
     region_list = read_env()
     for r in region_list:
         print(r)
-        response = create_stack(r)
-        print("Stack Created".format(response))
+        # response = create_stack(r)
+        # print("Stack Created".format(response))
+        # get_stack_status(region=r)
+        # delete_stack(r)
+        if action=='create':
+            create_stack(r)
+            print('Stack {} Created at {}'.format(stack_name, r))
+        if action=='delete':
+            status = get_stack_status(region=r)
+            if status=='CREATE_COMPLETE' or status=='UPDATE_COMPLETE':
+                delete_stack(region=r)
+            else:
+                print('Unable to delete, Stack is not in delete state')

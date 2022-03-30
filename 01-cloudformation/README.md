@@ -368,6 +368,9 @@ functionality. Query S3 to ensure that the buckets have been deleted.
 
 - Commit your changes to your latest branch.
 
+Solution: script.py can create, delete stack from one command.
+
+
 ### Retrospective 1.3
 
 #### Question: Portability
@@ -384,6 +387,7 @@ finding existing stacks from the methods that create or update those stacks?
 
 If not, refactor your Python, Ruby or NodeJS scripts to work in the
 manner described.
+
 
 ## Additional Reading
 
