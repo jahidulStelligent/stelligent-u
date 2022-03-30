@@ -1,0 +1,7 @@
+[
+  {
+    "ParameterKey": "IAMUserNmae",
+    "ParameterValue": "jahidul-cfn-lab-user1",
+    "UsePreviousValue": false
+  }
+]

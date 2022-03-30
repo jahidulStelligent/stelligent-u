@@ -1,0 +1,25 @@
+---
+AWSTemplateFormatVersion: "2010-09-09"
+Description:
+  Sample Template for 01-cloudformation Lab
+Parameters:
+  BucketName:
+    Default: jahidul-01-cloudformation
+    Description: S3 Bucket Name
+    Type: String
+#Conditions:
+#  IsReagionDefault: !Equals [!Ref AWS::Region, us-east-1]
+Resources:
+  S3Bucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      #BucketName: !Ref BucketName #!Ref "AWS::Region"
+      BucketName:
+        "Fn::Join" : [ "-", [ Ref: AWS::Region, Ref: AWS::AccountId, Ref: BucketName ] ]
+#        !Join
+#        - '-'
+#        - - !Ref AWS::Region
+#          - !Ref AWS::AccountId
+#          - !Ref BucketName
+
+# aws cloudformation create-stack --stack-name jahidul-010-cloudformation-lab --template-body file://CrossReferencingResources.yaml --region us-east-1 --profile temp --capabilities CAPABILITY_NAMED_IAM

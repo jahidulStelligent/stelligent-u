@@ -84,6 +84,16 @@ create an AWS Simple Storage Service (S3) Bucket.
   to run the template. Use your preferred region.
 
 - Note the output provided by creating the Stack.
+  - Change Set
+  `aws cloudformation create-change-set --stack-name jahidul-010-cloudformation-lab --change-set-name first-change-set --template-body file://SampleTemplate.yaml --capabilities CAPABILITY_IAM --change-set-type CREATE --profile temp`
+  ```json
+   {
+    "Id": "arn:aws:cloudformation:us-east-1:324320755747:changeSet/first-change-set/dd8ec3ca-994a-41ef-aec4-a02b2fd59356",
+    "StackId": "arn:aws:cloudformation:us-east-1:324320755747:stack/jahidul-010-cloudformation-lab/85be4670-aaa8-11ec-97d7-128ba5a37e89"
+   }
+  ```
+  - Execute Change Set
+  `aws cloudformation execute-change-set --change-set-name first-change-set --stack-name jahidul-010-cloudformation-lab --profile temp`
 
 - Though *functionally* unnecessary, the Description (i.e. its *purpose*)
   element documents your code's *intent*, so provide one. The Description
@@ -106,6 +116,7 @@ to the stack and use the parameter's value as the name of the S3 bucket.
 - Put your parameter into a separate JSON file and pass that file to the CLI.
 
 - Update your stack.
+  - `aws cloudformation update-stack --stack-name jahidul-010-cloudformation-lab --template-body file://SampleTemplate.yaml --parameters file://parameters.json --profile temp`
 
 - Add the template changes and new parameter file to your Github repo.
 
@@ -121,7 +132,9 @@ running the template from (i.e., using
 - Do not hard code the Account ID. Do not use an additional parameter to
   provide the Account ID value.
 
-- Update the stack.
+- Update the stack. 
+  - Due to the restrictions of one bucket/user I was getting `You have attempted to create more buckets than allowed (Service: Amazon S3; Status Code: 400; Error Code: TooManyBuckets;`
+  - I have deleted old stack and created new stack with template
 
 - Commit the changes to your Github repo.
 
@@ -140,6 +153,7 @@ name.
   deploying to some region other than your preferred region.
 
 - Commit the changes to your Github repo.
+####Status Done
 
 #### Lab 1.1.5: Termination Protection; Clean up
 
@@ -153,20 +167,36 @@ name.
 
 - List the S3 buckets in both regions once this lesson's Stacks have been
   deleted to ensure their removal.
+##### Status Done
 
 ### Retrospective 1.1
 
 #### Question: Why YAML
 
-_Why do we prefer the YAML format for CFN templates?_
+_Why do we prefer the YAML format for CFN templates?
+
+* YAML has a couple of big advantages over JSON, including the ability to self reference, support for complex datatypes, embedded block literals, comments, and more.
+
+* A big win for YAML is that it supports comments. This is very useful especially when you use it for configuration.
+
+* YAML-based templates use less punctuation and should be substantially easier to write and to read. They also allow the use of comments. CloudFormation supports essentially all of YAML, with the exception of hash merges, aliases, and some tags (binary, imap, pairs, TIMESTAMP, and set).
+
+* In addition to being more readable, YAML takes fewer characters to express the same information as JSON, and there is a character limit on the size of the template you can upload to CloudFormation.
+
 
 #### Question: Protecting Resources
 
 _What else can you do to prevent resources in a stack from being deleted?_
 
 See [DeletionPolicy](https://aws.amazon.com/premiumsupport/knowledge-center/cloudformation-accidental-updates/).
+* Set the DeletionPolicy attribute to prevent the deletion of an individual resource at the stack level.
+* Use AWS Identity and Access Management (IAM) policies to restrict the ability of users to delete or update a stack and its resources. 
+* Assign a stack policy to prevent updates to stack resources.
 
 _How is that different from applying Termination Protection?_
+
+* Use a stack policy only as a fail-safe mechanism to prevent accidental updates to specific stack resources. 
+* To control access to AWS resources or actions, use IAM.
 
 #### Task: String Substitution
 
@@ -201,6 +231,10 @@ IAM Managed Policy that controls that user.
 
 - Create the Stack.
 
+Solution: 
+- Template: SampleTemplate
+- CLI: ` aws cloudformation create-stack --stack-name jahidul-010-cloudformation-lab --template-body file://CrossReferencingResources.yaml --parameters file://parameters1.json --region us-east-1 --profile temp --capabilities CAPABILITY_NAMED_IAM`
+
 #### Lab 1.2.2: Exposing Resource Details via Exports
 
 Update the template by adding a CFN Output that exports the Managed
@@ -210,6 +244,9 @@ Policy's Amazon Resource Name ([ARN](https://docs.aws.amazon.com/general/latest/
 
 - [List all the Stack Exports](https://docs.aws.amazon.com/cli/latest/reference/cloudformation/list-exports.html)
   in that Stack's region.
+Solution: 
+- Template: CrossReferenceingResource.yaml
+- CLI: `aws cloudformation update-stack --stack-name jahidul-010-cloudformation-lab --template-body file://CrossReferencingResources.yaml --parameters file://parameters1.json --region us-east-1 --profile temp --capabilities CAPABILITY_NAMED_IAM`
 
 #### Lab 1.2.3: Importing another Stack's Exports
 
@@ -217,15 +254,23 @@ Create a *new* CFN template that describes an IAM User and applies to it
 the Managed Policy ARN created by and exported from the previous Stack.
 
 - Create this new Stack.
+  - Solution: ImportingAnotherStacksExport.yaml
+  - Note: * I did not find any CFN optiont to describe IAM user and attache IAM Managed policy in that IAM user
+          * Either I am missing something nor instead of decribe it shall be create new IAM user and attache the Managed poicy in that.
+          * I have solved it creating new I am user. 
 
 - [List all the Stack Imports](https://docs.aws.amazon.com/cli/latest/reference/cloudformation/list-imports.html)
   in that stack's region.
+  - Solution: `aws cloudformation list-imports --export-name jahidul-010-cloudformation-lab:S3ReadPolicy`
 
 #### Lab 1.2.4: Import/Export Dependencies
 
 Delete your CFN stacks in the same order you created them in. Did you
 succeed? If not, describe how you would _identify_ the problem, and
 resolve it yourself.
+Findings:
+- When tried to delete first template which has export in outputs, instead to delete stack went to update complete state with this message: `Export jahidul-010-cloudformation-lab:S3ReadPolicy cannot be deleted as it is in use by jahidul-010-ImportingAnotherStacksExport`
+- Delete the one which has imported the exported resource.
 
 ### Retrospective 1.2
 
@@ -234,6 +279,9 @@ resolve it yourself.
 Show how to use the IAM policy tester to demonstrate that the user
 cannot perform 'Put' actions on any S3 buckets.
 
+Solution: Used Policy Simulator to test the user permission.
+![img.png](img.png)
+
 #### Task: SSM Parameter Store
 
 Using the AWS Console, create a Systems Manager Parameter Store
@@ -241,6 +289,8 @@ parameter in the same region as the first Stack, and provide a value for
 that parameter. Modify the first Stack's template so that it utilizes
 this Parameter Store parameter value as the IAM User's name. Update the
 first stack. Finally, tear it down.
+
+Solution: Updated stack with ssm Template - CrossReferencingResources.yaml
 
 ## Lesson 1.3: Portability & Staying DRY
 
@@ -263,6 +313,11 @@ CloudFormation). Some lab exercises have already demonstrated
 portability (_can you point out where?_) and this lesson will focus
 on it specifically.
 
+Answer: 
+- Using Parameters
+- Using System Manager Parameter Store
+- Importing Resources from another template
+
 #### Lab 1.3.1: Scripts and Configuration
 
 Create a single script that re-uses one CloudFormation template to
@@ -280,6 +335,8 @@ deploy _a single S3 bucket_.
   where the "_friendly-name_" value is parameterized in the CFN template
   but has a default value.
 
+Solution: 
+- Created script.sh to take input from env.yaml to create 4 stacks at same time in different region.
 #### Lab 1.3.2: Coding with AWS SDKs
 
 Repeat the exercise in the previous lab, with two modifications:
@@ -311,6 +368,9 @@ functionality. Query S3 to ensure that the buckets have been deleted.
 
 - Commit your changes to your latest branch.
 
+Solution: script.py can create, delete stack from one command.
+
+
 ### Retrospective 1.3
 
 #### Question: Portability
@@ -327,6 +387,7 @@ finding existing stacks from the methods that create or update those stacks?
 
 If not, refactor your Python, Ruby or NodeJS scripts to work in the
 manner described.
+
 
 ## Additional Reading
 

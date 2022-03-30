@@ -1,0 +1,21 @@
+---
+AWSTemplateFormatVersion: "2010-09-09"
+Description:
+  Sample Template for 01-cloudformation Lab
+Parameters:
+  BucketName:
+    Default: jahidul-01-cloudformation
+    Description: S3 Bucket Name
+    Type: String
+Conditions:
+  IsReagionDefault: !Equals [!Ref AWS::Region, us-east-1]
+Resources:
+  S3Bucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      #BucketName: !Ref BucketName #!Ref "AWS::Region"
+      BucketName:
+        !Join
+        - '-'
+        - - !If [IsReagionDefault,!Ref AWS::AccountId,!Ref AWS::Region  ]
+          - !Ref BucketName
