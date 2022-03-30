@@ -1,7 +1,12 @@
 import boto3
 import os, sys, yaml, json
+"""
+1. Set Profile to temp
+2. Read regions value from a YAML file
+3. Executes a cf template in multiple regions
 
-region='us-east-1'
+"""
+#region='us-east-1'
 stack_name = 'jahidul-010-cloudformation-lab'
 bucket_name = 'jahidul-01-cloudformation'
 
@@ -27,8 +32,8 @@ def read_cf_template():
     with open(template_file_location, 'r') as content_file:
         content = yaml.load(content_file, Loader=yaml.Loader)
 
-    print(type(content))
-    print(content)
+    # print(type(content))
+    # print(content)
     # convert yaml to json string
     content = json.dumps(content)
     return content
@@ -57,7 +62,9 @@ def get_sts_token(region):
 
 
 def create_stack(region):
-    response = get_sts_token(region).create_stack(
+    session = boto3.Session(profile_name='temp')
+    temp_cf_client = session.client('cloudformation', region_name=region)
+    response = temp_cf_client.create_stack(
         StackName=stack_name,
         TemplateBody=read_cf_template(),
         Parameters=[
@@ -75,7 +82,7 @@ def create_stack(region):
             'AWS::S3::Bucket',
         ],
         OnFailure='ROLLBACK',
-        EnableTerminationProtection=True
+        EnableTerminationProtection=False
     )
     return response
 
@@ -89,4 +96,4 @@ if __name__ == '__main__':
     for r in region_list:
         print(r)
         response = create_stack(r)
-        print(response)
+        print("Stack Created".format(response))
