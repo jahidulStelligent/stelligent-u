@@ -1,0 +1,1 @@
+ aws s3 cp data s3://stelligent-u-mdjahidul.islam.labs --recursive --profile temp | aws s3 ls s3://stelligent-u-mdjahidul.islam.labs/data --profile temp

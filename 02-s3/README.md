@@ -100,10 +100,12 @@ S3 buckets are located in regions, but their names are globally unique.
 Using "aws s3", create a bucket:
 
 - Use the us-west-2 region.
+  - `aws s3 mb s3://stelligent-u-mdjahidul.islam.labs --region us-west-2 --profile temp`
 
 - Call the bucket "stelligent-u-_your-AWS-username_".
 
 - List the contents of the bucket.
+- `aws s3 ls s3://stelligent-u-mdjahidul.islam.labs`
 
 #### Lab 2.1.2: Upload Objects to a Bucket
 
@@ -114,12 +116,14 @@ Add an object to your bucket:
 
 - Copy the file to your bucket using the "aws s3" command. Find more
   than one way to upload it.
-
+  - `aws s3 cp file.txt s3://stelligent-u-mdjahidul.islam.labs --profile temp`
 - List the contents of the bucket after each upload.
+  - `aws s3 cp file2.txt s3://stelligent-u-mdjahidul.islam.labs --profile temp | aws s3 ls s3://stelligent-u-mdjahidul.islam.labs --profile temp`
 
 ##### Question: Copying to Top Level
 
 _How would you copy the contents of the directory to the top level of your bucket?_
+ `aws s3 cp data s3://stelligent-u-mdjahidul.islam.labs --recursive --profile temp`
 
 ##### Question: Directory Copying
 
