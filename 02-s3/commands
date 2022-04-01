@@ -1,1 +1,15 @@
  aws s3 cp data s3://stelligent-u-mdjahidul.islam.labs --recursive --profile temp | aws s3 ls s3://stelligent-u-mdjahidul.islam.labs/data --profile temp
+
+ aws s3 sync . s3://stelligent-u-mdjahidul.islam.labs --exclude "*" --include "data/*" --profile temp
+
+ aws s3 rm s3://stelligent-u-mdjahidul.islam.labs --recursive --profile temp
+
+ aws s3 sync data/private.txt s3://stelligent-u-mdjahidul.islam.labs/data/private.txt --acl aws-exec-read
+
+ aws s3 sync data s3://stelligent-u-mdjahidul.islam.labs/data/ --acl public-read
+
+ aws s3api create-bucket --bucket stelligent-u-mdjahidul.islam.labs --region us-east-1 --profile temp
+
+ aws s3api putb-object --bucket stelligent-u-mdjahidul.islam.labs2.2.3 --region us-east-1 --profile temp
+
+ aws s3 sync . s3://stelligent-u-mdjahidul.islam.labs2.2.3 --exclude "*" --include "data/*" --profile temp
