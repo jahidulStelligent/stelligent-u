@@ -225,9 +225,11 @@ authenticated user:
   maintenance access.
 
 - Set a bucket policy to grant public read access.
+- `aws s3api create-bucket --bucket stelligent-u-mdjahidul.islam.labs --acl public-read`
 
 - Set an S3 ACL on "private.txt" to block read access unless you're
   authenticated.
+- `aws s3 sync data/private.txt s3://stelligent-u-mdjahidul.islam.labs/data/private.txt --acl aws-exec-read`
 
 When you're done, verify that anybody (e.g. you, unauthenticated) can
 read most files but can't read "private.txt", and only you can modify
