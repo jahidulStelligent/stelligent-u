@@ -1,0 +1,21 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Trust Policy Lab 3.2 Not completed
+Resources:
+  CustomIAMRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: !Ref AWS::AccountId
+            Action:
+              - 'sts:AssumeRole'
+      Description: Role to provide readonly access to IAM
+      RoleName: CustomIAMRole3
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/IAMReadOnlyAccess
+        - arn:aws:iam::aws:policy/AmazonS3FullAccess
+
+# aws cloudformation create-stack --stack-name jahidul-03-iam-lab --template-body file://3_2_TrustPolicy.yaml --profile temp --capabilities CAPABILITY_NAMED_IAM

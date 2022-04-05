@@ -1,0 +1,52 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Lab 3.1.3 Customer Managed Policy Re-Use
+Resources:
+  CustomIAMRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: !Ref AWS::AccountId
+            Action:
+              - 'sts:AssumeRole'
+      Description: Role to provide readonly access to IAM
+      RoleName: CustomIAMRole
+
+  CustomIAMRole2:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: !Ref AWS::AccountId
+            Action:
+              - 'sts:AssumeRole'
+      Description: Role to provide readonly access to IAM
+      RoleName: CustomIAMRole2
+
+  CustomIAMReadOnlyPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      Roles:
+        - !Ref CustomIAMRole
+        - !Ref CustomIAMRole2
+      ManagedPolicyName: CustomIAMReadOnlyPolicy
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action:
+              - "iam:GenerateCredentialReport"
+              - "iam:GenerateServiceLastAccessedDetails"
+              - "iam:Get*"
+              - "iam:List*"
+              - "iam:SimulateCustomPolicy"
+              - "iam:SimulatePrincipalPolicy"
+            Resource: '*'
+
+# aws cloudformation create-stack --stack-name jahidul-03-iam-lab --template-body file://3_1_3_CustomerManagedPolicyReuse.yaml --profile temp --capabilities CAPABILITY_NAMED_IAM

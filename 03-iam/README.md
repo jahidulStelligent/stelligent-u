@@ -89,8 +89,8 @@ Create a CFN template that specifies an IAM Role.
 - Use the [awscli](https://docs.aws.amazon.com/cli/latest/reference/iam/index.html)
   to query the IAM service twice:
 
-  - List all the Roles
-  - Describe the specific Role your Stack created.
+  - List all the Roles `aws iam list-roles`
+  - Describe the specific Role your Stack created. `aws iam get-role --role-name MyCustomIAMRole --profile temp`
 
 #### Lab 3.1.2: Customer Managed Policy
 
@@ -105,6 +105,7 @@ inline policy more generally usable:
 
 - Update the Stack using the modified template.
 
+Solution: CustomerManagedPolicyLab3_1_2.yaml
 #### Lab 3.1.3: Customer Managed Policy Re-Use
 
 Update the template further to demonstrate reuse of the customer managed
@@ -126,6 +127,8 @@ policy:
   - If the stack update was not successful,
     [troubleshoot and determine why](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-update-behaviors.html#update-replacement).
 
+Solution: 3_1_3_CustomerManagedPolicyReuse.yaml
+
 #### Lab 3.1.4: AWS-Managed Policies
 
 Replace the customer managed policy with
@@ -140,6 +143,7 @@ Replace the customer managed policy with
 
 - Update the stack.
 
+Solution: 3_1_4_AWSManagedPolicies.yaml
 #### Lab 3.1.5: Policy Simulator
 
 Read about the [AWS Policy Simulator](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_testing-policies.html)
