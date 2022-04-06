@@ -100,10 +100,12 @@ S3 buckets are located in regions, but their names are globally unique.
 Using "aws s3", create a bucket:
 
 - Use the us-west-2 region.
+  - `aws s3 mb s3://stelligent-u-mdjahidul.islam.labs --region us-west-2 --profile temp`
 
 - Call the bucket "stelligent-u-_your-AWS-username_".
 
 - List the contents of the bucket.
+- `aws s3 ls s3://stelligent-u-mdjahidul.islam.labs`
 
 #### Lab 2.1.2: Upload Objects to a Bucket
 
@@ -114,18 +116,20 @@ Add an object to your bucket:
 
 - Copy the file to your bucket using the "aws s3" command. Find more
   than one way to upload it.
-
+  - `aws s3 cp file.txt s3://stelligent-u-mdjahidul.islam.labs --profile temp`
 - List the contents of the bucket after each upload.
+  - `aws s3 cp file2.txt s3://stelligent-u-mdjahidul.islam.labs --profile temp | aws s3 ls s3://stelligent-u-mdjahidul.islam.labs --profile temp`
 
 ##### Question: Copying to Top Level
 
 _How would you copy the contents of the directory to the top level of your bucket?_
+ `aws s3 cp data s3://stelligent-u-mdjahidul.islam.labs --recursive --profile temp`
 
 ##### Question: Directory Copying
 
 _How would you copy the contents and include the directory name in the s3 object
 paths?_
-
+- `aws s3 sync . s3://stelligent-u-mdjahidul.islam.labs --exclude "*" --include "data/*" --profile temp`
 ##### Question: Object Access
 
 _[Can anyone else see your file yet](https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-access-control.html)?_
@@ -136,20 +140,27 @@ For further reading, see the S3 [Access Policy Language Overview](https://docs.a
 
 _What makes "sync" a better choice than "cp" for some S3 uploads?_
 
+Sync allows to upload multiple files and directory much easier way than cp
 #### Lab 2.1.3: Exclude Private Objects When Uploading to a Bucket
 
 Add a private file to your data directory. Then, upload the directory to your
 bucket again **without including the private file**.
 
 - Verify after uploading that the file doesn't exist in the bucket.
+- `aws s3 sync . s3://stelligent-u-mdjahidul.islam.labs --exclude "*" --include "data/*" --exclude "data/private.txt" --profile temp
+   `
 
 - Did you find two different ways to accomplish this task? If not, make sure to
   read the [documentation on sync flags](https://docs.aws.amazon.com/cli/latest/reference/s3/sync.html).
+- 
 
 #### Lab 2.1.4: Clean Up
 
 Clean up: remove your bucket. What do you have to do before you can
 remove it?
+- Empty the bucket 
+- ` aws s3 rm s3://stelligent-u-mdjahidul.islam.labs --recursive --profile temp`
+- `aws s3 rb s3://stelligent-u-mdjahidul.islam.labs --profile -temp`
 
 ### Retrospective 2.1
 
@@ -171,9 +182,11 @@ Create your bucket again and upload the contents of your "data"
 directory with the "aws s3 sync" command.
 
 - Include the "private.txt" file this time.
+- `aws s3 sync . s3://stelligent-u-mdjahidul.islam.labs --exclude "*" --include "data/*" --profile temp`
 
 - Use a "sync" command parameter to make all the files in the bucket
   publicly readable.
+- ` aws s3 sync data s3://stelligent-u-mdjahidul.islam.labs/data/ --acl public-read`
 
 ##### Question: Downloading Protection
 
@@ -202,6 +215,7 @@ _Is there a way you can change the permissions on the file without re-uploading 
 The [aws s3api command](https://docs.aws.amazon.com/cli/latest/reference/s3api/index.html#s3api)
 gives you a lot more options. Remove the bucket again, then recreate it
 to start fresh.
+`aws s3api create-bucket --bucket stelligent-u-mdjahidul.islam.labs2.2.3 --region us-east-1 --profile temp`
 
 Make all files publicly readable, grant yourself access to do anything
 to all files, and block access to "private.txt" unless you're an
@@ -211,9 +225,11 @@ authenticated user:
   maintenance access.
 
 - Set a bucket policy to grant public read access.
+- `aws s3api create-bucket --bucket stelligent-u-mdjahidul.islam.labs --acl public-read`
 
 - Set an S3 ACL on "private.txt" to block read access unless you're
   authenticated.
+- `aws s3 sync data/private.txt s3://stelligent-u-mdjahidul.islam.labs/data/private.txt --acl aws-exec-read`
 
 When you're done, verify that anybody (e.g. you, unauthenticated) can
 read most files but can't read "private.txt", and only you can modify

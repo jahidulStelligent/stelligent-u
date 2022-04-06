@@ -1,0 +1,7 @@
+[
+  {
+    "ParameterKey": "awsExampleRolesParameter",
+    "ParameterValue": "CustomIAMRole",
+    "UsePreviousValue": false
+  }
+]

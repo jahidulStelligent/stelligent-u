@@ -1,0 +1,25 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: AWS S3 User
+Parameters:
+  awsExampleRolesParameter:
+    Type: CommaDelimitedList
+    Description: Names of existing Roles you want to add to the newly created Managed Policy
+Resources:
+  CustomIAMReadOnlyPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      Roles: !Ref awsExampleRolesParameter
+      ManagedPolicyName: CustomIAMReadOnlyPolicy
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action:
+              - "iam:GenerateCredentialReport"
+              - "iam:GenerateServiceLastAccessedDetails"
+              - "iam:Get*"
+              - "iam:List*"
+              - "iam:SimulateCustomPolicy"
+              - "iam:SimulatePrincipalPolicy"
+            Resource: '*'
+# aws cloudformation create-stack --stack-name jahidul-03-iam-lab-01 --template-body file://CustomerManagedPolicyLab3_1_2.yaml --profile temp --parameters file://parameters.json --capabilities CAPABILITY_NAMED_IAM

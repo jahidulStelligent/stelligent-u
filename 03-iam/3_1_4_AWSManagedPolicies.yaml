@@ -1,0 +1,37 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: 3_1_4_AWSManagedPolicies
+Resources:
+  CustomIAMRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: !Ref AWS::AccountId
+            Action:
+              - 'sts:AssumeRole'
+      Description: Role to provide readonly access to IAM
+      RoleName: CustomIAMRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/IAMReadOnlyAccess
+
+  CustomIAMRole2:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: !Ref AWS::AccountId
+            Action:
+              - 'sts:AssumeRole'
+      Description: Role to provide readonly access to IAM
+      RoleName: CustomIAMRole2
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/IAMReadOnlyAccess
+        - arn:aws:iam::aws:policy/AmazonEC2ReadOnlyAccess
+
+# aws cloudformation create-stack --stack-name jahidul-03-iam-lab --template-body file://3_1_4_AWSManagedPolicies.yaml --profile temp --capabilities CAPABILITY_NAMED_IAM
