@@ -1,0 +1,18 @@
+[
+  {
+    "ParameterKey": "amiId",
+    "ParameterValue": "ami-0c02fb55956c7d316",
+    "UsePreviousValue": false
+  },
+  {
+    "ParameterKey": "ec2Type",
+    "ParameterValue": "t2.micro",
+    "UsePreviousValue": false
+  },
+  {
+    "ParameterKey": "keyName",
+    "ParameterValue": "mdjahidul-key-pair",
+    "UsePreviousValue": false
+  }
+]
+

@@ -33,5 +33,3 @@ Resources:
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/IAMReadOnlyAccess
         - arn:aws:iam::aws:policy/AmazonEC2ReadOnlyAccess
-
-# aws cloudformation create-stack --stack-name jahidul-03-iam-lab --template-body file://3_1_4_AWSManagedPolicies.yaml --profile temp --capabilities CAPABILITY_NAMED_IAM

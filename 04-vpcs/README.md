@@ -112,6 +112,13 @@ AWS CLI.
 
 - Be sure to create it in the same region you'll be doing your labs.
 
+`aws ec2 create-key-pair \
+--key-name mdjahidul-key-pair \
+--key-type rsa \
+--query "KeyMaterial" \
+--output text > mdjahidul-key-pair.pem \
+--profile temp`
+
 #### Lab 4.1.4: Test Instance
 
 Launch an EC2 instance into your VPC.
@@ -129,10 +136,13 @@ Launch an EC2 instance into your VPC.
 
 - Use the same tags you put on your VPC.
 
+Solution: vpc_lab_4_1_4.yaml
+
 ##### Question: Post Launch
 
 _After you launch your new stack, can you ssh to the instance?_
 
+No I can't. Instance goes to stop state right after the launch or start
 ##### Question: Verify Connectivity
 
 _Is there a way that you can verify Internet connectivity from the instance
