@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: "2010-09-09"
-Description: AWS S3 User
+Description: AWS VPC Lab
 Resources:
   MyVPC:
     Type: AWS::EC2::VPC
@@ -70,6 +70,15 @@ Resources:
     Properties:
       RouteTableId: !Ref PublicInternetRouteTable
       SubnetId: !Ref MySubnet
+  MyRouteTableRoute:
+    Type: AWS::EC2::Route
+    DependsOn: MyInternetGateway
+    Properties:
+      RouteTableId:
+        Ref: PublicInternetRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId:
+        Ref: MyInternetGateway
 
 Outputs:
   vpcId:
