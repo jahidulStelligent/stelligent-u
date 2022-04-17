@@ -107,10 +107,11 @@ Group (ASG): [ask Amazon to create one for us from a running instance](https://d
 ##### Question: Resources
 
 _What was created in addition to the new Auto Scaling Group?_
-
+ - Launch configurations
 ##### Question: Parameters
 
-_What parameters did Amazon record in the resources it created for you?_
+_What parameters did Amazon record in the resources it created for you?
+- Cant identify 
 
 #### Lab 6.1.2: Launch Config and ASG in CFN
 
@@ -135,20 +136,27 @@ created for you in Lab 6.1.1.
 _What config info or resources did you have to create explicitly that Amazon
 created for you when launching an ASG from an existing instance?_
 
+- Launch configurations
+
 #### Lab 6.1.3: Launch Config Changes
 
 Modify your launch config by increasing your instances from t2.micro to
 t2.small. Update your stack.
 
+- Updated
+
 ##### Question: Stack Updates
 
 _After updating your stack, did your running instance get replaced or resized?_
-
+- Launch config updated but no new instance created, size remained t2.micro
 Terminate the instance in your ASG.
-
+- Terminated 
 ##### Question: Replacement Instance
 
 _Is the replacement instance the new size or the old?_
+- New Size, t2.small
+- Although we updated launch config with new size it does not go in eefect until we 
+  terminate current instance.
 
 #### Lab 6.1.4: ASG Update Policy
 
@@ -163,9 +171,14 @@ type to t2.medium. Update your stack.
 _After updating, what did you see change? Did your running instance get
 replaced this time?_
 
+- Yes
+
 ##### Question: Launch Config
 
 _Did the launch config change or was it replaced?_
+
+- Replaced with new name. As we cant update custom name resources. I had to
+  change the current launch config name.
 
 #### Lab 6.1.5: Launch Template
 
@@ -173,10 +186,13 @@ Finally, replace your launch config with a [Launch Template](https://docs.aws.am
 then update your stack again. Specify only the minimum number of
 parameters you need to.
 
+
 ##### Question: Required Info
 
 _What config info or resources do you have to provide in addition to what
 Launch Configurations require?_
+
+- Version of template
 
 You'll see both launch configs and launch templates in your client
 engagements. Templates were [introduced in Nov 2017](https://aws.amazon.com/about-aws/whats-new/2017/11/introducing-launch-templates-for-amazon-ec2-instances/)
@@ -194,6 +210,7 @@ associated with those. Then tear your stack down.
 
 _After you tear down the stack, do all the associated resources go away?
 What's left?_
+- Autoscaling group created by cli and associated Launch configurations(Deleted manually)
 
 ### Retrospective 6.1
 
