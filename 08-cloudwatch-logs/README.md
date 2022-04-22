@@ -57,7 +57,10 @@ log group and log stream:
 
 When you're done, list the log groups and the log streams to confirm
 they exist.
-
+- `aws logs create-log-group --log-group-name jahidul.islam.c9logs --profile temp`
+- `aws logs create-log-stream --log-group-name jahidul.islam.c9logs --log-stream-name c9.training --profile temp`
+- `aws logs describe-log-groups --log-group-name-prefix jahidul.islam.c9logs --profile temp`
+- `aws logs describe-log-streams --log-group-name jahidul.islam.c9logs --log-stream-name-prefix c9.training --profile temp`
 #### Lab 8.1.2: The CloudWatch agent
 
 The CloudWatch agent is the standard tool for sending log data to

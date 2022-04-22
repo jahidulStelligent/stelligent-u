@@ -62,6 +62,7 @@ Resources:
 #        - LoadBalancerAttribute
 #      Name: String
 #      Scheme: String
+#      Scheme: internet-facing
       SecurityGroups:
         - !Ref SecurityGroup
 #      SubnetMappings:
@@ -149,10 +150,18 @@ Resources:
           FromPort: 80
           ToPort: 80
           CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 0.0.0.0/0
       SecurityGroupEgress:
         - IpProtocol: tcp
           FromPort: 80
           ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
           CidrIp: 0.0.0.0/0
 
 

@@ -1,0 +1,4 @@
+aws logs create-log-group --log-group-name jahidul.islam.c9logs --profile temp
+aws logs create-log-stream --log-group-name jahidul.islam.c9logs --log-stream-name c9.training --profile temp
+aws logs describe-log-groups --log-group-name-prefix jahidul.islam.c9logs --profile temp
+aws logs describe-log-streams --log-group-name jahidul.islam.c9logs --log-stream-name-prefix c9.training --profile temp'
