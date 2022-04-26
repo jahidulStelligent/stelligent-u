@@ -147,3 +147,6 @@ aws cloudformation create-stack --stack-name jahidul-07-load-balancing-lab-7 \
 aws cloudformation update-stack --stack-name jahidul-07-load-balancing-lab-7 \
                                 --template-body file://lb_lab_7_1_2.yaml \
                                 --profile temp
+
+
+git merge --no-commit --no-ff jahiudl/07-load-balancing
