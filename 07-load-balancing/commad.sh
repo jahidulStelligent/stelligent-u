@@ -139,3 +139,11 @@ aws ec2 create-key-pair \
     --profile temp
 
 cat /var/log/cloud-init-output.log
+
+aws cloudformation create-stack --stack-name jahidul-07-load-balancing-lab-7 \
+                                --template-body file://lb_lab_7_1_1.yaml \
+                                --profile temp
+
+aws cloudformation update-stack --stack-name jahidul-07-load-balancing-lab-7 \
+                                --template-body file://lb_lab_7_1_2.yaml \
+                                --profile temp
