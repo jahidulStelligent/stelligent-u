@@ -86,15 +86,18 @@ haywire!
 - Wait about two minutes after the stack completes.
 
 - Go to your load balancer endpoint.
+- Endpoint still works
 
 ##### Question: Health Checks
 
 _What can be controlled with the interval/healthy threshold/unhealthy threshold
 settings?_
-
+- Unable to identify a satisfactory answer !!! Any help will be much appreciated
 ##### Question: ASG Behavior
 
 _What's happening to the instances in the ASG? How do you know?_
+- Instances helathcheck failed. After a while unhealthy instance was removed and new instance was added.
+- Error Messafge in the target Group: Health checks failed with these codes: [404]
 
 #### Lab 7.1.3: Secure Sockets
 
@@ -102,15 +105,14 @@ Let's fix that bad health check endpoint and add an https listener.
 
 - First, fix your health check and verify everything is working
   smoothly.
-
 - [Create a self-signed certificate locally](https://www.ibm.com/support/knowledgecenter/SSMNED_5.0.0/com.ibm.apic.cmc.doc/task_apionprem_gernerate_self_signed_openSSL.html)
-
+- Done
 - Via the aws acm CLI or AWS Certificate Manager console, import your
   newly created certificate, make note of its ARN.
-
+- Done
 - Add a new listener to your previously created load balancer using
   HTTPS on port 443 and referencing your newly uploaded certificate.
-
+- Added
 - Let's be extra secure and specify a [security policy](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/create-https-listener.html#describe-ssl-policies)
   on that listener which requires Forward Secrecy (has FS in its
   name).
@@ -126,6 +128,8 @@ _What is the trade off of going with a more secure SSL policy?_
 
 _We imported a local certificate into ACM, what other options do you have? How
 do those processes work?_
+
+- We can create a certificate using AWS ACM
 
 #### Lab 7.1.4: Cleanup
 
