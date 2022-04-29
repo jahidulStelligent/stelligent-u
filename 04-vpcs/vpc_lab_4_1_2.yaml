@@ -1,0 +1,93 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: AWS VPC Lab
+Resources:
+  MyVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: "10.0.0.0/16"
+      EnableDnsHostnames: 'true'
+      EnableDnsSupport: 'true'
+      Tags:
+        - Key: Name
+          Value: mdjahidul-stelligent-lab-4
+        - Key: user
+          Value: mdjahidul-stelligent
+        - Key: stelligent-u-lesson
+          Value: "4.1"
+        - Key: stelligent-u-lab
+          Value: "4.1.1"
+  MySubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId:
+        Ref: MyVPC
+      CidrBlock: 10.0.0.0/24
+      AvailabilityZone: "us-east-1a"
+      Tags:
+        - Key: Name
+          Value: mdjahidul-stelligent-lab-4
+        - Key: user
+          Value: mdjahidul-stelligent
+        - Key: stelligent-u-lesson
+          Value: "4.1"
+        - Key: stelligent-u-lab
+          Value: "4.1.1"
+  MyInternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: mdjahidul-stelligent-lab-4
+        - Key: user
+          Value: mdjahidul-stelligent
+        - Key: stelligent-u-lesson
+          Value: "4.1"
+        - Key: stelligent-u-lab
+          Value: "4.1.2"
+  attachGateway:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId:
+        Ref: MyVPC
+      InternetGatewayId:
+        Ref: MyInternetGateway
+  PublicInternetRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId:
+        Ref: MyVPC
+      Tags:
+        - Key: Name
+          Value: mdjahidul-stelligent-lab-4
+        - Key: user
+          Value: mdjahidul-stelligent
+        - Key: stelligent-u-lesson
+          Value: "4.1"
+        - Key: stelligent-u-lab
+          Value: "4.1.2"
+  AttachRouteTable:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref PublicInternetRouteTable
+      SubnetId: !Ref MySubnet
+  MyRouteTableRoute:
+    Type: AWS::EC2::Route
+    DependsOn: MyInternetGateway
+    Properties:
+      RouteTableId:
+        Ref: PublicInternetRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId:
+        Ref: MyInternetGateway
+
+Outputs:
+  vpcId:
+    Description: The VPC ID
+    Export:
+      Name: myVPC
+    Value: !Ref MyVPC
+  subnetId:
+    Description: The subnet ID
+    Export:
+      Name: mySubnet
+    Value: !Ref MySubnet

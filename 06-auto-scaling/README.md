@@ -107,10 +107,11 @@ Group (ASG): [ask Amazon to create one for us from a running instance](https://d
 ##### Question: Resources
 
 _What was created in addition to the new Auto Scaling Group?_
-
+ - Launch configurations
 ##### Question: Parameters
 
-_What parameters did Amazon record in the resources it created for you?_
+_What parameters did Amazon record in the resources it created for you?
+- Cant identify 
 
 #### Lab 6.1.2: Launch Config and ASG in CFN
 
@@ -135,20 +136,27 @@ created for you in Lab 6.1.1.
 _What config info or resources did you have to create explicitly that Amazon
 created for you when launching an ASG from an existing instance?_
 
+- Launch configurations
+
 #### Lab 6.1.3: Launch Config Changes
 
 Modify your launch config by increasing your instances from t2.micro to
 t2.small. Update your stack.
 
+- Updated
+
 ##### Question: Stack Updates
 
 _After updating your stack, did your running instance get replaced or resized?_
-
+- Launch config updated but no new instance created, size remained t2.micro
 Terminate the instance in your ASG.
-
+- Terminated 
 ##### Question: Replacement Instance
 
 _Is the replacement instance the new size or the old?_
+- New Size, t2.small
+- Although we updated launch config with new size it does not go in eefect until we 
+  terminate current instance.
 
 #### Lab 6.1.4: ASG Update Policy
 
@@ -163,9 +171,14 @@ type to t2.medium. Update your stack.
 _After updating, what did you see change? Did your running instance get
 replaced this time?_
 
+- Yes
+
 ##### Question: Launch Config
 
 _Did the launch config change or was it replaced?_
+
+- Replaced with new name. As we cant update custom name resources. I had to
+  change the current launch config name.
 
 #### Lab 6.1.5: Launch Template
 
@@ -173,10 +186,13 @@ Finally, replace your launch config with a [Launch Template](https://docs.aws.am
 then update your stack again. Specify only the minimum number of
 parameters you need to.
 
+
 ##### Question: Required Info
 
 _What config info or resources do you have to provide in addition to what
 Launch Configurations require?_
+
+- Version of template
 
 You'll see both launch configs and launch templates in your client
 engagements. Templates were [introduced in Nov 2017](https://aws.amazon.com/about-aws/whats-new/2017/11/introducing-launch-templates-for-amazon-ec2-instances/)
@@ -194,6 +210,7 @@ associated with those. Then tear your stack down.
 
 _After you tear down the stack, do all the associated resources go away?
 What's left?_
+- Autoscaling group created by cli and associated Launch configurations(Deleted manually)
 
 ### Retrospective 6.1
 
@@ -226,9 +243,23 @@ From that output, find the name of your ASG.
 ##### Question: Filtering Output
 
 _Can you filter your output with "\--query" to print only your ASGs
-resource ID? Given that name, [describe your ASG](https://docs.aws.amazon.com/cli/latest/reference/autoscaling/describe-auto-scaling-groups.html).
+resource ID? 
+
+`aws cloudformation describe-stack-resources \
+--stack-name jahidul-06-auto-sacling-lab-lab-6-2 \
+--output text \
+--query 'StackResources[0].PhysicalResourceId' \
+--profile temp`
+
+Given that name, [describe your ASG](https://docs.aws.amazon.com/cli/latest/reference/autoscaling/describe-auto-scaling-groups.html).
 Find the Instance ID. Can you filter the output to print only the Instance ID
 value?_
+
+`aws autoscaling describe-auto-scaling-groups \
+--auto-scaling-group-name jislam-ec2-asg-by-cf-2 \
+--output text \
+--query 'AutoScalingGroups[0].Instances[0].InstanceId' \
+--profile temp`
 
 (You can use the `--query` option, but you can also use
 [jq](https://stedolan.github.io/jq/). Both are useful in different scenarios.)
@@ -242,6 +273,8 @@ the new instance launch.
 _How long did it take for the new instance to spin up? How long before it was
 marked as healthy?_
 
+- After running the cli command second time
+
 #### Lab 6.2.2: Scale Out
 
 Watch your stack and your ASG in the web console as you do this lab.
@@ -252,17 +285,25 @@ then update the stack.
 ##### Question: Desired Count
 
 _Did it work? If it didn't, what else do you have to increase?_
-
+- Desired capacity:2 must be between the specified min size:1 and max size:1 (Service: AmazonAutoScaling; Status Code: 400;
+- Increased MaxSize: 3
 ##### Question: Update Delay
 
 _How quickly after your stack update did you see the ASG change?_
-
+ - Almost immediately after the stack update
 #### Lab 6.2.3: Manual Interference
 
 Take one of your instances [out of your ASG manually](http://docs.aws.amazon.com/cli/latest/reference/autoscaling/set-instance-health.html)
 using the CLI. Observe Auto Scaling as it launches a replacement
 instance. Take note of what it does with the instance you marked
 unhealthy.
+
+- `aws autoscaling set-instance-health \
+  --instance-id i-073898ed7e4b2dac2 \
+  --health-status Unhealthy \
+  --profile temp`
+- Terminated and Launched another new instance. (New instance shows initializing while old one is in terminated state))
+
 
 #### Lab 6.2.4: Troubleshooting Features
 
@@ -283,6 +324,14 @@ check status doesn't change and the scaled group hasn't changed. Put the
 instance back in action. Note the commands you used and the change to
 the lifecycle state of the instance after each change.
 
+- `aws autoscaling enter-standby \
+  --instance-ids i-0d1f05f17aec35950 \
+  --auto-scaling-group-name jislam-ec2-asg-by-cf-2 \
+  --should-decrement-desired-capacity \
+  --profile temp`
+
+- `aws autoscaling describe-auto-scaling-instances --instance-ids i-0d1f05f17aec35950 --profile temp`
+
 Read through the [Scaling Processes](https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-suspend-resume-processes.html#process-types)
 section in the suspending auto-scaling doc. It gives you a lot of
 flexibility. For example, if you have a problematic deployment, you may
@@ -294,6 +343,31 @@ now, so we can't exercise AddToLoadBalancer, but let's take a look at
 another. Disable Launch, then put an instance on standby and back in
 action again. Note the process you have to go through, including any
 commands you run.
+
+- Suspend Launch
+`aws autoscaling suspend-processes --auto-scaling-group-name jislam-ec2-asg-by-cf-2 --scaling-processes Launch --profile temp`
+- One instance in standby mode
+`aws autoscaling enter-standby \
+--instance-ids i-0390bc79a2a702413 \
+--auto-scaling-group-name jislam-ec2-asg-by-cf-2 \
+--should-decrement-desired-capacity \
+--profile temp`
+- Exit Standby (While Launch is disable)
+`aws autoscaling exit-standby \
+--instance-ids i-0390bc79a2a702413 \
+--auto-scaling-group-name jislam-ec2-asg-by-cf-2 \
+--profile temp`
+ Response received: Cannot move instances out of Standby for AutoScalingGroup jislam-ec2-asg-by-cf-2 while the Launch process is suspended
+- Going to resume the Launch and try putting instance back in service
+`aws autoscaling resume-processes \
+--auto-scaling-group-name jislam-ec2-asg-by-cf-2 \
+--scaling-processes Launch \
+--profile temp`
+- Put insatnce back in service
+`aws autoscaling exit-standby \
+--instance-ids i-0390bc79a2a702413 \
+--auto-scaling-group-name jislam-ec2-asg-by-cf-2 \
+--profile temp`
 
 ### Retrospective 6.2
 
@@ -338,13 +412,13 @@ and use that command to spike the load.)
 ##### Question: Scaling Interval
 
 _After the scaling interval, do you see a new instance created?_
-
+- Yes
 Stop the CPU-consuming process.
 
 ##### Question: Scale-In
 
 _After the load has been low for a few minutes, do you see any instances terminated?_
-
+No
 #### Lab 6.3.2: Simple Scale-In
 
 Add another alarm, this time to allow the group to scale back in (or
@@ -358,15 +432,16 @@ Update your stack.
 ##### Question: Instance Count
 
 _Do you see more instances than the configured "desired capacity"?_
-
+- No
 ##### Question: Termination Order
 
 _If an instance is automatically terminated, which is it, the last one created
 or the first?_
-
+- Ops did not become able to identify. But it came down to minimum number which is 1 
 ##### Question: Termination Policy
 
 _Can you change your policies to alter which instance gets terminated first?_
+ * No
 
 #### Lab 6.3.3: Target Tracking policy
 
@@ -388,17 +463,18 @@ update your stack again.*
 
 _Is your resulting configuration more or less complicated than the one that
 uses a simple policy?_
+- Less complicated as I do not have to create the cloudwatch alarm
 
 Consume CPU the way you did in lab 1, then stop.
 
 ##### Question: Scale-Out Delay
 
 _How long do you have to let it run before you see the group scale out?_
-
+- It takes about 1 minute to see instances scaled out.
 ##### Question: Scale-In Delay
 
 _How much time passes after you stop before it scales back in?_
-
+- First one terminated after 9 minutes, last one terminated after 16 minutes
 #### Lab 6.3.4: Target Tracking Scale-In
 
 Now eliminate your simple scale-in policy and enable scale-in on your
@@ -408,7 +484,7 @@ an instance is added.
 ##### Question: Changing Delay
 
 _After you stop consuming CPU, how long does it take now before scale-in?_
-
+ - First Instance started terminating after 22 minutes.
 ### Retrospective 6.3
 
 In addition to configuring things yourself, you can integrate

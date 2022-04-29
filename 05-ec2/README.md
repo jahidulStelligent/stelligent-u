@@ -127,10 +127,11 @@ Create the stack:
   employs a [waiter](https://docs.aws.amazon.com/cli/latest/reference/cloudformation/wait/index.html)
   so that the script exits only when the CFN service has finished creating the
   stack.
-
+  - script.sh
 - Use the AWS CLI to describe the stack's resources, then use the AWS
   CLI to describe each instance that was created.
-
+  - `aws cloudformation describe-stack-resource --stack-name jahidul-05-ec2-lab --logical-resource-id MyWinEC2 --profile temp`
+  - `aws cloudformation describe-stacks --stack-name jahidul-05-ec2-lab --profile temp`
 #### Lab 5.1.3: Update Your Stack
 
 Change the AMI ID for the Windows instance to instead launch an AMI for
@@ -140,6 +141,7 @@ Windows Server 2012 R2:
 
 - Query the stack's events using the AWS CLI. What happened to your
   original EC2 Windows instance?
+- `aws cloudformation describe-stack-events --stack-name jahidul-05-ec2-lab --profile temp`
 
 #### Lab 5.1.4: Teardown
 
@@ -197,8 +199,13 @@ function.
 
 - Using the AWS CLI, retrieve the Stack's outputs to fetch the EIP's
   IPV4 address.
+  - `aws cloudformation describe-stack-resource \
+    --stack-name jahidul-05-ec2-lab \
+    --logical-resource-id MyEIP \
+    --profile temp`
 
-Try pinging that IP address. Does it work?
+Try pinging that IP address. Does it work? Yes it does work. When i 
+came to work on Monday I had to create default vpc and launch the stack.
 
 - Using the CFN template, create a Security Group enabling
   [ICMP](https://en.wikipedia.org/wiki/Internet_Control_Message_Protocol).
@@ -238,7 +245,7 @@ Can you SSH into the instance?
 
 Now can you SSH into your instance? If not, troubleshoot and fix the
 issue using your CFN template.
-
+- Yes I can SSH into the instance.
 ### Retrospective 5.2
 
 For more information on resolving connection issues, see the
@@ -312,6 +319,8 @@ Userdata docs to debug.
 
 Compare those same metrics with the values received from Lab 5.3.1.
 Record your results.
+
+Task Done: I went to understand CW Agent mechanism and installation. 
 
 ##### Task: Private Subnet
 

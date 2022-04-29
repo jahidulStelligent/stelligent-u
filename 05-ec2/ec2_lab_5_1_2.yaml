@@ -1,0 +1,77 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Launch EC2 using Launch Template
+
+Resources:
+  LaunchTemplate:
+    Type: AWS::EC2::LaunchTemplate
+    Properties:
+      LaunchTemplateName: jahiudl-ec2-lab-launch-template
+      LaunchTemplateData:
+#        ImageId: ami-0c02fb55956c7d316
+        InstanceType: t2.micro
+        KeyName: mdjahidul-key-pair
+#        SecurityGroups:
+#          - !GetAtt MyEc2SecurityGroup.GroupId
+#  MyEc2SecurityGroup:
+#    Type: AWS::EC2::SecurityGroup
+#    Properties:
+#      GroupDescription: "Allow ssh"
+#      GroupName: "MyEc2SecurityGroup"
+#      VpcId: !ImportValue myVPC
+#      SecurityGroupIngress:
+#        - IpProtocol: tcp
+#          FromPort: 22
+#          ToPort: 22
+#          CidrIp: 0.0.0.0/0
+#        - IpProtocol: icmp
+#          FromPort: -1
+#          ToPort: -1
+#          CidrIp: 0.0.0.0/0
+#      SecurityGroupEgress:
+#        - IpProtocol: tcp
+#          FromPort: 80
+#          ToPort: 80
+#          CidrIp: 0.0.0.0/0
+  MyWinEC2:
+    Type: AWS::EC2::Instance
+    Properties:
+      LaunchTemplate:
+        LaunchTemplateId: !Ref LaunchTemplate
+        Version: 1
+      ImageId: ami-0f9139fc7335dcec4
+      Tags:
+        - Key: "Name"
+          Value: "jahidul-windowsEC2"
+
+  MyUbuntuEC2:
+    Type: AWS::EC2::Instance
+    Properties:
+      LaunchTemplate:
+        LaunchTemplateId: !Ref LaunchTemplate
+        Version: 1
+      ImageId: ami-0745142a642f5af3a
+      Tags:
+        - Key: "Name"
+          Value: "jahidul-ubuntuEC2"
+
+Outputs:
+  MyWinEC2:
+    Description: Insatnce ID
+    Export:
+      Name: !Join [ ":", [ !Ref "AWS::StackName", stack, MyWinEC2Id ] ]
+    Value: !Ref MyWinEC2
+  MyWinEC2PrivateIp:
+    Description: Private IP
+    Export:
+      Name: !Join [ ":", [ !Ref "AWS::StackName", stack, Ec2InsatncePrivateIp ] ]
+    Value: !GetAtt MyWinEC2.PrivateIp
+  MyUbuntuEC2:
+    Description: Insatnce ID
+    Export:
+      Name: !Join [ ":", [ !Ref "AWS::StackName", stack, MyUbuntuEC2Id ] ]
+    Value: !Ref MyUbuntuEC2
+  MyUbuntuEC2PrivateIp:
+    Description: Private IP
+    Export:
+      Name: !Join [ ":", [ !Ref "AWS::StackName", stack, MyUbuntuEC2PrivateIp ] ]
+    Value: !GetAtt MyUbuntuEC2.PrivateIp

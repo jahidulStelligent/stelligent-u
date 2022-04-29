@@ -57,7 +57,10 @@ log group and log stream:
 
 When you're done, list the log groups and the log streams to confirm
 they exist.
-
+- `aws logs create-log-group --log-group-name jahidul.islam.c9logs --profile temp`
+- `aws logs create-log-stream --log-group-name jahidul.islam.c9logs --log-stream-name c9.training --profile temp`
+- `aws logs describe-log-groups --log-group-name-prefix jahidul.islam.c9logs --profile temp`
+- `aws logs describe-log-streams --log-group-name jahidul.islam.c9logs --log-stream-name-prefix c9.training --profile temp`
 #### Lab 8.1.2: The CloudWatch agent
 
 The CloudWatch agent is the standard tool for sending log data to
@@ -91,7 +94,7 @@ repo:
   delete the running stack, and relaunch.
 
 - Use the AWS CLI to display the log events for your group and stream from 8.1.1.
-
+Done: I had add the log group and stream name in the log section of the config, wizerd does not provide that facility. For that I have taken refernce of documentation.
 > *Note:* logs may take several minutes to appear.
 
 #### Lab 8.1.3: 3rd party tool awslogs
@@ -107,6 +110,7 @@ as it arrives.
 
 - Use awslogs to get logs from your group from the last 5 minutes,
   last 20 minutes and last hour.
+  - `awslogs get amazon-cloudwatch-agent.log --start='2h' --aws-region us-east-1`
 
 #### Lab 8.1.4: CloudWatch logs lifecycle
 
@@ -115,6 +119,7 @@ lifecycle of the logs.
 
 - Use the AWS CLI to [set the retention policy](https://docs.aws.amazon.com/cli/latest/reference/logs/put-retention-policy.htm)
   of your log group to 60 days.
+  - `aws logs put-retention-policy --log-group-name jahidul.islam.c9logs --retention-in-days 60 --profile temp`
 
 - Use the CLI to review the policy in your log group.
 
@@ -127,7 +132,7 @@ You can tear down your EC2 stack at this point.
 
 Use the AWS CLI to remove the log group and log stream you created
 earlier.
-
+ - `aws logs delete-log-group --log-group-name jahidul.islam.c9logs --profile temp`
 You'll need [jorgebastida/awslogs](https://github.com/jorgebastida/awslogs)
 in Lesson 8.2.1, so now's a good time to install it on your laptop. You may
 find that it's handy for client engagements and future lab work as well.
@@ -169,7 +174,8 @@ provides the following in a single stack:
 - An S3 bucket for CloudTrail to publish logs.
 
 - A CloudTrail trail that uses the CloudWatch log group.
-
+Note: Getting an IAM user error while executing the template
+`Resource handler returned message: "Invalid request provided: User: arn:aws:iam::324320755747:user/mdjahidul.islam.labs is not authorized to perform: iam:PassRole on resource: arn:aws:logs:us-east-1:324320755747:log-group:jahidul-08-cloudwatch-logs-8-myLogGroup-ZD3MCyp7ToVb:* (Service: CloudTrail, Status Code: 400, Request ID: e41ec2f4-4c32-4089-87c0-b6608da9be14, Extended Request ID: null)" (RequestToken: 733cfc93-9a01-876b-8cca-8b7fa520c0ba, HandlerErrorCode: InvalidRequest)`
 #### Lab 8.2.2: Logging AWS infrastructure changes
 
 Now that you have your logging infrastructure, create a separate stack

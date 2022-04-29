@@ -1,0 +1,2 @@
+aws cloudformation describe-stacks --stack-name jahidul-05-ec2-lab --profile temp
+aws cloudformation describe-stack-resource --stack-name jahidul-05-ec2-lab --logical-resource-id MyWinEC2 --profile temp

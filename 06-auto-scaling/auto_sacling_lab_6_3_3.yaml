@@ -1,0 +1,197 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: AutoScalingGroup MyLaunchConfig MyEc2SecurityGroup
+Parameters:
+  AmiId:
+    Type: String
+    Description: EC2 AMI ID
+    Default: ami-07d02ee1eeb0c996c
+  InstanceType:
+    Type: String
+    Description: EC2 Insatnce Type
+    Default: t2.medium
+  KeyName:
+    Type: String
+    Description: EC2 Key Pair Name
+    Default: mdjahidul-key-pair
+Resources:
+  AutoScalingGroup:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    UpdatePolicy:
+      AutoScalingReplacingUpdate:
+        WillReplace: true
+    Properties:
+      AutoScalingGroupName: jislam-ec2-asg-by-cf-targetacking
+      #LaunchConfigurationName: !Ref MyLaunchConfig
+      LaunchTemplate:
+        LaunchTemplateId: !Ref MyEc2LaunchTemplate
+        Version: 1
+      AvailabilityZones:
+        - us-east-1e
+      DesiredCapacity: 2
+      MaxSize: 5
+      MinSize: 1
+  MyEc2LaunchTemplate:
+    Type: AWS::EC2::LaunchTemplate
+    Properties:
+      LaunchTemplateData:
+        ImageId: !Ref AmiId
+        InstanceType: !Ref InstanceType
+        KeyName: !Ref KeyName
+      LaunchTemplateName: jislam-ec2-launch-template-for-targatetracking
+#  ASGScaleOutPolicyHigh:
+#    Type: AWS::AutoScaling::ScalingPolicy
+#    Properties:
+#      AutoScalingGroupName: !Ref AutoScalingGroup
+#      PolicyType: "SimpleScaling" # Default Value
+#      AdjustmentType: ChangeInCapacity
+#      ScalingAdjustment: 1
+#      StepAdjustments:
+#        - MetricIntervalLowerBound: 2
+#          ScalingAdjustment: 4
+  ASGScaleOutPolicyHigh:
+    Type: AWS::AutoScaling::ScalingPolicy
+    Properties:
+      AutoScalingGroupName: !Ref AutoScalingGroup
+      PolicyType: "TargetTrackingScaling" # Default Value
+      AdjustmentType: ChangeInCapacity
+      #ScalingAdjustment: 1
+      TargetTrackingConfiguration:
+        DisableScaleIn: true
+        PredefinedMetricSpecification:
+          PredefinedMetricType: ASGAverageCPUUtilization
+        TargetValue: 10
+#  CPUAlarmHigh:
+#    Type: AWS::CloudWatch::Alarm
+#    Properties:
+#      EvaluationPeriods: '2'
+#      Statistic: Average
+#      Threshold: '1'
+#      AlarmDescription: Scale out if CPU > 1% for 2 minutes
+#      Period: '60'
+#      AlarmActions:
+#        - !Ref ASGScaleOutPolicyHigh
+#      Namespace: AWS/EC2
+#      Dimensions:
+#        - Name: AutoScalingGroupName
+#          Value:
+#            Ref: AutoScalingGroup
+#      ComparisonOperator: GreaterThanThreshold
+#      MetricName: CPUUtilization
+  MyScaleInPolicy:
+    Type: AWS::AutoScaling::ScalingPolicy
+    Properties:
+      AdjustmentType: ChangeInCapacity
+      PolicyType: 'SimpleScaling' # Default Value
+      AutoScalingGroupName: !Ref AutoScalingGroup
+      ScalingAdjustment: -1
+
+  MyCloudWatchAlarmIn:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmActions:
+        - !Ref MyScaleInPolicy
+      AlarmDescription: Scale-in if CPU utilization is below 40% over a period of 2 minutes
+      ComparisonOperator: LessThanThreshold
+      DatapointsToAlarm: 1
+      Dimensions:
+        - Name: AutoScalingGroupName
+          Value: !Ref AutoScalingGroup
+      EvaluationPeriods: 1
+      MetricName: CPUUtilization
+      Namespace: AWS/EC2
+      Period: 120
+      Statistic: Average
+      Threshold: 9
+    DependsOn: ASGScaleOutPolicyHigh
+#  CloudWatchAlarm:
+#    Type: AWS::CloudWatch::Alarm
+#    Properties:
+#      ActionsEnabled: TRUE
+#      AlarmActions:
+#        - String
+#      AlarmDescription: EC2 Instance CPU Utilization
+#      AlarmName: ec2-instance-autoscaling-alarm
+#      ComparisonOperator: GreaterThanOrEqualToThreshold
+#      DatapointsToAlarm: 1
+#      EvaluationPeriods: 1
+#      MetricName: CPUUtilization
+#      Namespace: AWS/EC2
+#      OKActions:
+#        - String
+#      Period: Integer
+#      Statistic: String
+#      Threshold: Double
+#      ThresholdMetricId: String
+#      TreatMissingData: String
+#      Unit: String
+
+
+  # We strongly recommend that you do not use launch configurations.
+  # They do not provide full functionality for Amazon EC2 Auto Scaling or Amazon EC2.
+#  MyLaunchConfig:
+#    Type: AWS::AutoScaling::LaunchConfiguration
+#    Properties:
+#      ImageId: !Ref AmiId
+#      InstanceId: i-0b35dedf2e4daf880
+#      InstanceType: !Ref InstanceType
+##      KeyName: !Ref KeyName
+#      LaunchConfigurationName: jislam-ec2-launch-config-by-cf-3
+#      SecurityGroups:
+#        - !Ref MyEc2SecurityGroup
+
+#  MyDebianEC2:
+#    Type: AWS::EC2::Instance
+#    Properties:
+#      ImageId: !Ref AmiId
+#      Tags:
+#        - Key: "Name"
+#          Value: "jahidul-debian"
+#      SecurityGroupIds:
+#        - !Ref MyEc2SecurityGroup
+#      KeyName: !Ref KeyName
+#  MyEc2SecurityGroup:
+#    Type: AWS::EC2::SecurityGroup
+#    Properties:
+#      GroupDescription: "Allow ssh"
+#      GroupName: "MyEc2SecurityGroup"
+#      VpcId: vpc-08765bca90b29e055
+#      SecurityGroupIngress:
+#        - IpProtocol: tcp
+#          FromPort: 22
+#          ToPort: 22
+#          CidrIp: 0.0.0.0/0
+#        - IpProtocol: icmp
+#          FromPort: -1
+#          ToPort: -1
+#          CidrIp: 0.0.0.0/0
+#      SecurityGroupEgress:
+#        - IpProtocol: tcp
+#          FromPort: 80
+#          ToPort: 80
+#          CidrIp: 0.0.0.0/0
+#  MyEIP:
+#    Type: AWS::EC2::EIP
+#    Properties:
+#      InstanceId: !Ref MyDebianEC2
+#Outputs:
+#  MyDebianEC2:
+#    Description: Insatnce ID
+#    Export:
+#      Name: !Join [ ":", [ !Ref "AWS::StackName", stack, MyDebianEC2Id ] ]
+#    Value: !Ref MyDebianEC2
+#  MyDebianEC2PrivateIp:
+#    Description: Private IP
+#    Export:
+#      Name: !Join [ ":", [ !Ref "AWS::StackName", stack, MyDebianEC2PrivateIp ] ]
+#    Value: !GetAtt MyDebianEC2.PrivateIp
+#  MyDebianEC2EIP:
+#    Description:  EIP from EC2
+#    Export:
+#      Name: !Join [ ":", [ !Ref "AWS::StackName", stack, MyDebianEC2EIP ] ]
+#    Value: !GetAtt MyDebianEC2.PublicIp
+#  EIP:
+#    Description: EIP
+#    Export:
+#      Name: !Join [ ":", [ !Ref "AWS::StackName", stack, EIP ] ]
+#    Value: !Ref MyEIP
+

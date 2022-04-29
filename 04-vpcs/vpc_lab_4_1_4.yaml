@@ -1,0 +1,69 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: AWS EC2 Instance
+Parameters:
+  amiId:
+    Type: String
+    Description: EC2 AMI ID
+    Default: ami-0c02fb55956c7d316
+  ec2Type:
+    Type: String
+    Description: EC2 Insatnce Type
+    Default: t2.small
+  keyName:
+    Type: String
+    Description: EC2 Key Pair Name
+    Default: mdjahidul-key-pair
+Resources:
+  myEC2:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      ImageId: !Ref amiId
+      InstanceType: !Ref ec2Type
+      KeyName: mdjahidul-key-pair
+      SubnetId: !ImportValue mySubnet
+      SecurityGroupIds:
+        - !Ref mySecurityGroup
+      BlockDeviceMappings:
+        - DeviceName: /dev/sda1
+          Ebs:
+            VolumeSize: 250
+      Tags:
+        - Key: Name
+          Value: mdjahidul-stelligent-lab-4
+        - Key: user
+          Value: mdjahidul-stelligent
+        - Key: stelligent-u-lesson
+          Value: "4.1"
+        - Key: stelligent-u-lab
+          Value: "4.1.4"
+  mySecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: "Allow ssh"
+      GroupName: "mySecurityGroup"
+      VpcId: !ImportValue myVPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: icmp
+          FromPort: -1
+          ToPort: -1
+          CidrIp: 0.0.0.0/0
+      SecurityGroupEgress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+Outputs:
+  vpcId:
+    Description: Insatnce ID
+    Export:
+      Name: !Join [ ":", [ !Ref "AWS::StackName", Ec2InstanceId ] ]
+    Value: !Ref myEC2
+  privateIp:
+    Description: Private IP
+    Export:
+      Name: !Join [ ":", [ !Ref "AWS::StackName", Ec2InsatncePrivateIp ] ]
+    Value: !GetAtt myEC2.PrivateIp
