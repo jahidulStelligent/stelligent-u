@@ -5,10 +5,10 @@ Parameters:
     Default: '/aws/service/canonical/ubuntu/server/20.04/stable/current/amd64/hvm/ebs-gp2/ami-id'
   VPCID:
     Type: 'AWS::EC2::VPC::Id'
-    Default: vpc-08765bca90b29e055
+    Default: vpc-02fbdc48cdb3e209b
   SubnetID:
     Type: 'AWS::EC2::Subnet::Id'
-    Default: subnet-0354404c9c1fe0487
+    Default: subnet-0ac27e2b80216ef28
   KeyName:
     Type: String
     Description: EC2 Key Pair Name
@@ -76,10 +76,10 @@ Resources:
                       ]
                     ],
                     "append_dimensions": {
-                      "AutoScalingGroupName": "${aws:AutoScalingGroupName}",
-                      "ImageId": "${aws:ImageId}",
-                      "InstanceId": "${aws:InstanceId}",
-                      "InstanceType": "${aws:InstanceType}"
+                      "AutoScalingGroupName": "${!aws:AutoScalingGroupName}",
+                      "ImageId": "${!aws:ImageId}",
+                      "InstanceId": "${!aws:InstanceId}",
+                      "InstanceType": "${!aws:InstanceType}"
                     },
                     "metrics_collected": {
                       "cpu": {
@@ -127,7 +127,29 @@ Resources:
                         "metrics_collection_interval": 10
                       }
                     }
-                  }
+                  },
+                "logs": {
+                    "logs_collected": {
+                      "files": {
+                        "collect_list": [
+                          {
+                            "file_path": "/opt/aws/amazon-cloudwatch-agent/logs/amazon-cloudwatch-agent.log",
+                            "log_group_name": "amazon-cloudwatch-agent.log",
+                            "log_stream_name": "amazon-cloudwatch-agent.log",
+                            "timezone": "UTC"
+                          },
+                          {
+                            "file_path": "/opt/aws/amazon-cloudwatch-agent/jahidul-islam-c9logs.log",
+                            "log_group_name": "jahidul.islam.c9logs",
+                            "log_stream_name": "c9.training.log",
+                            "timezone": "Local"
+                          }
+                        ]
+                      }
+                    },
+                    "log_stream_name": "jahidul-islam-generic",
+                    "force_flush_interval" : 15
+                 }
                 }
 
         launch:
@@ -155,6 +177,13 @@ Resources:
                 - "ec2.amazonaws.com"
             Action:
               - "sts:AssumeRole"
+#          - Effect: "Allow"
+#            Principal:
+#              Service:
+#                - "ec2.amazonaws.com"
+#            Action:
+#              - "logs:FilterLogEvents"
+#
   SecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:

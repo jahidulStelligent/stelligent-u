@@ -145,6 +145,18 @@ aws logs create-log-stream --log-group-name jahidul.islam.c9logs --log-stream-na
 aws logs describe-log-groups --log-group-name-prefix jahidul.islam.c9logs --profile temp
 aws logs describe-log-streams --log-group-name jahidul.islam.c9logs --log-stream-name-prefix c9.training --profile temp
 
-aws cloudformation create-stack --stack-name jahidul-08-cloudwatch-logs-8 \
+aws cloudformation update-stack --stack-name jahidul-08-cloudwatch-logs-8 \
                                 --template-body file://cw_logs_lab_8_1_2.yml \
+                                --profile temp \
+                                --capabilities CAPABILITY_IAM
+/home/ubuntu/.local/bin
+
+	amazon-cloudwatch-agent.log
+
+aws cloudformation create-stack --stack-name jahidul-08-cloudwatch-logs-8 \
+                                --template-body file://cw_logs_lab_8_2_1.yml \
                                 --profile temp
+aws cloudformation update-stack --stack-name jahidul-08-cloudwatch-logs-8 \
+                                --template-body file://cw_logs_lab_8_2_1.yml \
+                                --profile temp \
+                                --capabilities CAPABILITY_IAM
