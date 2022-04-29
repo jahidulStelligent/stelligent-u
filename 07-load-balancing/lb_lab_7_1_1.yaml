@@ -64,6 +64,7 @@ Resources:
 #        - LoadBalancerAttribute
 #      Name: String
 #      Scheme: String
+#      Scheme: internet-facing
       SecurityGroups:
         - !Ref SecurityGroup
 #      SubnetMappings:
