@@ -44,13 +44,13 @@ Resources:
       HealthCheckPort: traffic-port
       HealthCheckProtocol: HTTP
       HealthCheckTimeoutSeconds: 5
-      HealthyThresholdCount: 3
-#      UnhealthyThresholdCount: 3
+      HealthyThresholdCount: 2
+      UnhealthyThresholdCount: 3
       Port: 80
       Protocol: HTTP
-#      TargetGroupAttributes:
-#        - Key: deregistration_delay.timeout_seconds
-#          Value: 20
+      TargetGroupAttributes:
+        - Key: deregistration_delay.timeout_seconds
+          Value: 20
 #      Targets:
 #        - TargetDescription
 #      TargetType: String
@@ -64,7 +64,6 @@ Resources:
 #        - LoadBalancerAttribute
 #      Name: String
 #      Scheme: String
-#      Scheme: internet-facing
       SecurityGroups:
         - !Ref SecurityGroup
 #      SubnetMappings:
@@ -80,6 +79,25 @@ Resources:
       LoadBalancerArn: !Ref LoadBalancer
       Port: 80
       Protocol: HTTP
+  LoadBalancerListener443:
+    Type: "AWS::ElasticLoadBalancingV2::Listener"
+    Properties:
+      DefaultActions:
+        - TargetGroupArn: !Ref WebServerTargetGroup
+          Type: forward
+      LoadBalancerArn: !Ref LoadBalancer
+      Port: 443
+      Protocol: HTTPS
+      Certificates:
+        - CertificateArn: arn:aws:acm:us-east-1:324320755747:certificate/b1975994-16b2-4f54-a308-b860e938d47c
+      SslPolicy: ELBSecurityPolicy-FS-2018-06
+#  LbListenerCertificate:
+#    Type: AWS::ElasticLoadBalancingV2::ListenerCertificate
+#    Properties:
+#      Certificates:
+#        - CertificateArn: arn:aws:acm:us-east-1:324320755747:certificate/b58a0be3-c8fb-4c82-be50-8f5b66e2b9b8
+#      ListenerArn: !Ref LoadBalancerListener443
+
 
   WebServersLC:
     Type: 'AWS::AutoScaling::LaunchConfiguration'
