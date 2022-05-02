@@ -67,7 +67,7 @@ Create and test a simple AWS Lambda function using the Lambda console.
 - Review the options you have for testing and running Lambdas.
 
 - When you're done, delete the Lambda.
-
+Note: I am using AWS SAM. 
 #### Lab 9.1.2: Lambda behind API Gateway
 
 Using API gateway to run a Lambda function.
@@ -87,10 +87,23 @@ Using API gateway to run a Lambda function.
 
 - Use the AWS CLI to call the API gateway which will call your Lambda
   function.
+  - `aws apigateway test-invoke-method \
+    --rest-api-id 0wkp5rmyd9 \
+    --resource-id p0kaiz \
+    --http-method GET \
+    --path-with-query-string '/hello'`
 
 - Lambdas can take a payload like JSON as input. Rewrite the function
   to take a JSON payload and simply return the payload, or an item
   from the payload.
+  - `aws apigateway test-invoke-method \
+    --rest-api-id 0wkp5rmyd9 \
+    --resource-id p0kaiz \
+    --http-method POST \
+    --path-with-query-string '/hello' \
+    --body file://body.json`
+  
+Note: I have used SAM to create lambda and API Gateway
 
 #### Lab 9.1.3: Lambda & CloudFormation with awscli
 
@@ -106,6 +119,8 @@ Use the AWS CLI to create Lambda functions:
 
 - Use the API gateway to make a test call to the lambda to confirm
   it's working.
+
+Note: Used sam to build, test and deploy
 
 ### Retrospective 9.1
 
@@ -146,6 +161,8 @@ a table in DynamoDB:
 
 Test the code using an API call as you've done before. Confirm that the
 call is inserting the item in the table.
+
+Note: Done lambda-lab-09 (SAM Project)
 
 #### Lab 9.2.2: Lambda via CloudWatch Rules
 
