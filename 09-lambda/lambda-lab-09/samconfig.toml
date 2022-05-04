@@ -1,0 +1,12 @@
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "jislam-lambda-lab"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-1mm0nnmwtru2k"
+s3_prefix = "jislam-lambda-lab"
+region = "us-east-1"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
+image_repositories = []
+disable_rollback = false
