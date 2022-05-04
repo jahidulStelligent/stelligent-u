@@ -55,8 +55,22 @@ Associate your CMK with this alias.
 Use the AWS KMS CLI to encrypt a plaintext file with a secret message
 (maybe that combo to the safe, or your luggage password). Send your file
 to a colleague with administrator access.
+- `aws kms encrypt \
+  --key-id alias/jislam-kms-alias \
+  --plaintext fileb://data.txt \
+  --output text \
+  --query CiphertextBlob \
+  --profile temp | base64 \
+  --decode > encrypted_data`
 
 #### Lab 10.1.4: Decrypt a ciphertext file
+- `aws kms decrypt \
+  --key-id alias/jislam-kms-alias \
+  --ciphertext-blob fileb://encrypted_data \
+  --output text \
+  --query Plaintext \
+  --profile temp | base64 \
+  --decode > decrypted_data.txt`
 
 Use the KMS CLI to now decrypt a ciphertext file.
 
@@ -67,9 +81,12 @@ Use the KMS CLI to now decrypt a ciphertext file.
 _For decrypting the ciphertext file, why didn't you have to specify a key? How
 did you have permission to decrypt?_
 
+- My KMS Key policy had explicit permission to my IAM User
+
 #### Question: KMS Alias
 
 _Why is it beneficial to use a KMS Alias?_
+- Do can call by simple name which can be remembered. 
 
 ## Lesson 10.2: Implementation of KMS Keys in S3
 
@@ -109,7 +126,7 @@ Delete your KMS CFN Stack.
 ##### Question: CMK
 
 _What happened to your CMK? Why?_
-
+- The default waiting period is 30 days beofre the key got completely deleted.
 ### Retrospective 10.2
 
 Check out the code for [stelligent/crossing](https://github.com/stelligent/crossing)

@@ -1,0 +1,59 @@
+---
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Randy's KMS template
+
+Resources:
+  MyKMSKey:
+    Type: 'AWS::KMS::Key'
+    Properties:
+      Description: An example symmetric KMS key
+      EnableKeyRotation: true
+      PendingWindowInDays: 20
+      KeyPolicy:
+        Version: 2012-10-17
+        Id: key-default-1
+        Statement:
+          - Sid: Enable IAM User Permissions
+            Effect: Allow
+            Principal:
+              AWS: 'arn:aws:iam::324320755747:root'
+            Action: 'kms:*'
+            Resource: '*'
+          - Sid: Allow administration of the key
+            Effect: Allow
+            Principal:
+              AWS: arn:aws:iam::324320755747:user/mdjahidul.islam.labs
+            Action:
+              - 'kms:Create*'
+              - 'kms:Describe*'
+              - 'kms:Enable*'
+              - 'kms:List*'
+              - 'kms:Put*'
+              - 'kms:Update*'
+              - 'kms:Revoke*'
+              - 'kms:Disable*'
+              - 'kms:Get*'
+              - 'kms:Delete*'
+              - 'kms:ScheduleKeyDeletion'
+              - 'kms:CancelKeyDeletion'
+            Resource: '*'
+
+  KMSAlias:
+    Type: AWS::KMS::Alias
+    Properties:
+      AliasName: alias/jislam-kms-alias
+      TargetKeyId: !Ref MyKMSKey
+
+Outputs:
+  KMSKeyARN:
+    Description: The KMS Key ARN
+    Export:
+      Name: !Join [ ":", [ !Ref "AWS::StackName", KMSKeyARN ] ]
+    Value: !GetAtt MyKMSKey.Arn
+
+  KMSKeyID:
+    Description: KMS Key ID
+    Export:
+      Name: !Join [ ":", [ !Ref "AWS::StackName", KMSKeyID ] ]
+    Value: !Ref MyKMSKey
+
