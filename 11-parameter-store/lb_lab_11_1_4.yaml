@@ -1,0 +1,204 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Parameters:
+  AmiId:
+    Type: String
+    Description: EC2 AMI ID
+    Default: ami-03ededff12e34e59e
+  InstanceType:
+    Type: String
+    Description: EC2 Insatnce Type
+    Default: t2.micro
+  KeyName:
+    Type: String
+    Description: EC2 Key Pair Name
+    Default: mdjahidul-key-pair
+  VpcId:
+    Type: String
+    Description: VPC ID
+    Default: vpc-01e9c74f88a760449
+  Subnets:
+    Type: CommaDelimitedList
+    Description: Coma Separated value
+    Default: 'subnet-0f349dac4533b5568,subnet-07f5f29d8f8dace36'
+  Name:
+    Description: name
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /mdjahidul.islam.labs/stelligent-u/lab11/name
+  MiddleName:
+    Description: name
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /mdjahidul.islam.labs/stelligent-u/lab11/name/middle-name
+  Team:
+    Description: team
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /mdjahidul.islam.labs/stelligent-u/lab11/name/team
+  Timezone:
+    Description: timezone
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /mdjahidul.islam.labs/stelligent-u/lab11/name/timezone
+  State:
+    Description: location
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /mdjahidul.islam.labs/stelligent-u/lab11/name/state
+  Startdate:
+    Description: startdate
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /mdjahidul.islam.labs/stelligent-u/lab11/name/startdate
+Resources:
+  WebServerAsg:
+    Type: 'AWS::AutoScaling::AutoScalingGroup'
+    Properties:
+      AutoScalingGroupName: 'AutomationBoxes'
+      VPCZoneIdentifier: !Ref Subnets
+      DesiredCapacity: '3'
+      HealthCheckType: 'ELB'
+      HealthCheckGracePeriod: 30
+      LaunchConfigurationName: !Ref WebServersLC
+      MaxSize: '3'
+      MinSize: '3'
+      TargetGroupARNs:
+        - !Ref WebServerTargetGroup
+
+  WebServerTargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      HealthCheckEnabled: true
+      HealthCheckIntervalSeconds: 20
+      HealthCheckPath: /index.html
+      HealthCheckPort: traffic-port
+      HealthCheckProtocol: HTTP
+      HealthCheckTimeoutSeconds: 5
+      HealthyThresholdCount: 3
+#      UnhealthyThresholdCount: 3
+      Port: 80
+      Protocol: HTTP
+#      TargetGroupAttributes:
+#        - Key: deregistration_delay.timeout_seconds
+#          Value: 20
+#      Targets:
+#        - TargetDescription
+#      TargetType: String
+#      UnhealthyThresholdCount: Integer
+      VpcId: !Ref VpcId
+  LoadBalancer:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      IpAddressType: ipv4
+#      LoadBalancerAttributes:
+#        - LoadBalancerAttribute
+#      Name: String
+#      Scheme: String
+#      Scheme: internet-facing
+      SecurityGroups:
+        - !Ref SecurityGroup
+#      SubnetMappings:
+#        - SubnetMapping
+      Subnets: !Ref Subnets
+      Type: application
+  LoadBalancerListener:
+    Type: "AWS::ElasticLoadBalancingV2::Listener"
+    Properties:
+      DefaultActions:
+        - TargetGroupArn: !Ref WebServerTargetGroup
+          Type: forward
+      LoadBalancerArn: !Ref LoadBalancer
+      Port: 80
+      Protocol: HTTP
+
+  WebServersLC:
+    Type: 'AWS::AutoScaling::LaunchConfiguration'
+    Properties:
+      ImageId: !Ref AmiId
+      InstanceType: !Ref InstanceType
+      KeyName: !Ref KeyName
+      LaunchConfigurationName: 'SimpleWebServerLC'
+      SecurityGroups:
+        - !Ref SecurityGroup
+      UserData:
+        Fn::Base64:
+          Fn::Sub: |
+            #!/bin/bash -xe
+            sudo amazon-linux-extras install -y nginx1
+            sudo service nginx start
+            sudo echo "<ul><li>${Name}</li>li>${MiddleName}</li><li>${Team}</li><li>${Timezone}</li><li>${State}</li><li>${Startdate}</li></ul>" > /usr/share/nginx/html/index.html
+#            /opt/aws/bin/cfn-init -v \
+#              --stack ${AWS::StackName} \
+#              --resource WebServersLC \
+#              --configsets All \
+#              --region ${AWS::Region}
+#
+#            # Signal the status from cfn-init
+#            /opt/aws/bin/cfn-signal -e $? \
+#              --stack ${AWS::StackName} \
+#              --resource WebServersLC \
+#              --region ${AWS::Region}
+#        Fn::Base64:
+#          Fn::Sub: |
+#            #!/bin/bash -xe
+#
+#            yum install -y aws-cfn-bootstrap
+#
+#            # Install the files and packages from the metadata
+#            /opt/aws/bin/cfn-init -v \
+#              --stack ${AWS::StackName} \
+#              --resource WebServersLC \
+#              --configsets All \
+#              --region ${AWS::Region}
+#
+#            # Signal the status from cfn-init
+#            /opt/aws/bin/cfn-signal -e $? \
+#              --stack ${AWS::StackName} \
+#              --resource WebServersLC \
+#              --region ${AWS::Region}
+
+    Metadata:
+      'AWS::CloudFormation::Init':
+        configSets:
+          All:
+            - ConfigureStelligentProject
+        ConfigureStelligentProject:
+          packages:
+            yum:
+              nginx: []
+          files:
+            /usr/share/nginx/html/index.html:
+              content: '<p>Automation for the People</p>'
+              mode: '000644'
+              owner: root
+              group: root
+          services:
+            sysvinit:
+              nginx:
+                enabled: 'true'
+                ensureRunning: 'true'
+
+  SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: "Allow ssh"
+      GroupName: "MyEc2SecurityGroup"
+      VpcId: !Ref VpcId
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 0.0.0.0/0
+      SecurityGroupEgress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 0.0.0.0/0
+
+

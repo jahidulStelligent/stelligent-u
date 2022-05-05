@@ -140,13 +140,64 @@ aws ec2 create-key-pair \
 
 cat /var/log/cloud-init-output.log
 
-aws cloudformation create-stack --stack-name jahidul-07-load-balancing-lab-7 \
-                                --template-body file://lb_lab_7_1_1.yaml \
+aws logs create-log-group --log-group-name jahidul.islam.c9logs --profile temp
+aws logs create-log-stream --log-group-name jahidul.islam.c9logs --log-stream-name c9.training --profile temp
+aws logs describe-log-groups --log-group-name-prefix jahidul.islam.c9logs --profile temp
+aws logs describe-log-streams --log-group-name jahidul.islam.c9logs --log-stream-name-prefix c9.training --profile temp
+
+aws cloudformation update-stack --stack-name jahidul-08-cloudwatch-logs-8 \
+                                --template-body file://cw_logs_lab_8_1_2.yml \
+                                --profile temp \
+                                --capabilities CAPABILITY_IAM
+/home/ubuntu/.local/bin
+
+	amazon-cloudwatch-agent.log
+
+aws cloudformation create-stack --stack-name jahidul-08-cloudwatch-logs-8 \
+                                --template-body file://cw_logs_lab_8_2_1.yml \
+                                --profile temp
+aws cloudformation update-stack --stack-name jahidul-08-cloudwatch-logs-8 \
+                                --template-body file://cw_logs_lab_8_2_1.yml \
+                                --profile temp \
+                                --capabilities CAPABILITY_IAM
+
+aws apigateway test-invoke-method \
+    --rest-api-id 0wkp5rmyd9 \
+    --resource-id p0kaiz \
+    --http-method GET \
+    --path-with-query-string '/hello'
+
+aws apigateway test-invoke-method \
+    --rest-api-id 4p56wf1xl4 \
+    --resource-id 1t07mg \
+    --http-method POST \
+    --path-with-query-string '/hello' \
+    --body file://body.json
+
+#----------------- AWS KMS ---------------------------#
+
+aws cloudformation create-stack --stack-name jahidul-kms-lab-10 \
+                                --template-body file://kms-lab-10.1.1.yaml \
                                 --profile temp
 
-aws cloudformation update-stack --stack-name jahidul-07-load-balancing-lab-7 \
-                                --template-body file://lb_lab_7_1_2.yaml \
+aws cloudformation update-stack --stack-name jahidul-kms-lab-10 \
+                                --template-body file://kms-lab-10.1.2.yaml \
                                 --profile temp
+# Encrypt
+aws kms encrypt \
+    --key-id alias/jislam-kms-alias \
+    --plaintext fileb://data.txt \
+    --output text \
+    --query CiphertextBlob \
+    --profile temp | base64 \
+    --decode > encrypted_data
 
+# Decrypt
+aws kms decrypt \
+    --key-id alias/jislam-kms-alias \
+    --ciphertext-blob fileb://encrypted_data \
+    --output text \
+    --query Plaintext \
+    --profile temp | base64 \
+    --decode > decrypted_data.txt
 
-git merge --no-commit --no-ff jahiudl/07-load-balancing

@@ -16,3 +16,4 @@ junk
 .idea/
 .iml
 commands.sh
+*.p12

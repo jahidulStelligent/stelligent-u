@@ -1,0 +1,58 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Parameters:
+  Name:
+    Description: name
+    Type: String
+  Team:
+    Description: title
+    Type: String
+  Timezone:
+    Description: timezone
+    Type: String
+  State:
+    Description: state
+    Type: String
+  StartDate:
+    Description: start_date
+    Type: String
+Resources:
+  NameParam:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: /mdjahidul.islam.labs/stelligent-u/lab11/name
+      Type: String
+      Value: !Ref Name
+      Description: Name of the engineer
+      AllowedPattern: "^[a-zA-Z]{1,10}$"
+  TeamParam:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: /mdjahidul.islam.labs/stelligent-u/lab11/name/team
+      Type: String
+      Value: !Ref Team
+      Description: Engineer's team
+      AllowedPattern: "^[a-zA-Z]{1,10}$"
+  TimezoneParam:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: /mdjahidul.islam.labs/stelligent-u/lab11/name/timezone
+      Type: String
+      Value: !Ref Timezone
+      Description: Engineer's timezone
+      AllowedPattern: "^[a-zA-Z]{1,10}$"
+  StateParam:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: /mdjahidul.islam.labs/stelligent-u/lab11/name/state
+      Type: String
+      Value: !Ref State
+      Description: location
+      AllowedPattern: "^[a-zA-Z]{1,10}$"
+  StartdateParam:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: /mdjahidul.islam.labs/stelligent-u/lab11/name/startdate
+      Type: String
+      Value: !Ref StartDate
+      Description: Engineer's start date
+      AllowedPattern: "^[a-zA-Z]{1,10}$"
