@@ -1,0 +1,27 @@
+[
+  {
+    "ParameterKey": "Name",
+    "ParameterValue": "Jahidul",
+    "UsePreviousValue": false
+  },
+  {
+    "ParameterKey": "Team",
+    "ParameterValue": "DevOps",
+    "UsePreviousValue": false
+  },
+  {
+    "ParameterKey": "Timezone",
+    "ParameterValue": "EST",
+    "UsePreviousValue": false
+  },
+  {
+    "ParameterKey": "State",
+    "ParameterValue": "NY",
+    "UsePreviousValue": false
+  },
+  {
+    "ParameterKey": "StartDate",
+    "ParameterValue": "March",
+    "UsePreviousValue": false
+  }
+]

@@ -91,7 +91,8 @@ as if the stack template might be used to store info about each engineer.
 
 - Store their home state as a 2-letter prefix under "state".
 
-- Store their start date under "start-date".
+- Store their start date under "start-date". 
+  - Note: I was unable to store any date format due to pattern validation.
 
 Launch the stack with a parameter file that sets information for
 yourself.
@@ -120,6 +121,7 @@ entire subtree with a single query.
 
 _When you look at your stack in the CloudFormation console, can you find
 the values of your parameter resources there?_
+  - Yes
 
 #### Lab 11.1.3: Integration with CloudFormation
 
@@ -159,6 +161,7 @@ document linked in the previous paragraph:
 > for the corresponding Systems Manager parameter keys. Note that these
 > values are set when the stack is created or updated, so they might
 > differ from the latest values in Parameter Store.
+![img.png](img.png)
 
 #### Lab 11.1.4: Secure Strings
 
@@ -196,12 +199,13 @@ the web page served by nginx.
 Read [Using Dynamic References to Specify Template Values](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/dynamic-references.html).
 Why can't you use that feature directly to read "middle-name" and show it
 in your web page?
+Secure String not supported by CloudFormation
 
 #### Question 2
 
 Can you use Secure String as an `AWS::SSM::Parameter::Value` type in a
 CloudFormation stack?
-
+- No
 ## Further Reading
 
 - Amazon recently [introduced](https://aws.amazon.com/blogs/aws/aws-secrets-manager-store-distribute-and-rotate-credentials-securely/)
